@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Doğançayır | Köyümüz</title>
+  <meta name="description" content="Eskişehir'in Seyitgazi ilçesine bağlı Doğançayır köyü: hikâye, kültür, galeri ve duyurular. Yerel video arkaplanlı modern tek sayfa site." />
+  <style>
+    :root{
+      --bg-dark: rgba(0,0,0,.55);
+      --bg-darker: rgba(0,0,0,.7);
+      --accent: #ffd34d;
+      --text: #f6f7fb;
+      --muted: #cfd3dc;
+      --card: rgba(255,255,255,.08);
+      --border: rgba(255,255,255,.12);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text); background:#0b0d12; line-height:1.6; overflow-x:hidden;
+    }
+
+    .video-bg{ position:fixed; inset:0; z-index:-2; overflow:hidden; }
+    .video-bg video{
+      width:120vw; height:120vh; position:absolute; top:50%; left:50%;
+      transform:translate(-50%,-50%); object-fit:cover; pointer-events:none;
+      filter:saturate(105%) contrast(105%);
+    }
+    .video-overlay{ position:fixed; inset:0;
+      background:linear-gradient(180deg, var(--bg-darker), var(--bg-dark) 40%, var(--bg-darker));
+      z-index:-1;
+    }
+
+    header{ position:sticky; top:0; backdrop-filter:blur(8px);
+      background:rgba(0,0,0,.35); border-bottom:1px solid var(--border); z-index:10; }
+    .container{ width:min(1100px,92%); margin-inline:auto; }
+    .nav{ display:flex; align-items:center; justify-content:space-between; padding:12px 0; }
+    .logo{ font-weight:800; letter-spacing:.3px; font-size:clamp(18px,2.2vw,22px); }
+    .logo b{ color:var(--accent) }
+    .nav a{ color:var(--text); text-decoration:none; opacity:.85; margin-left:18px; font-weight:600; font-size:14px; }
+    .nav a:hover{ opacity:1 }
+    .btn{ display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border:1px solid var(--border);
+      background:var(--card); color:var(--text); border-radius:999px; font-weight:600; text-decoration:none; }
+    .btn:hover{ background:rgba(255,255,255,.12) }
+
+    .hero{ padding:min(18vh,140px) 0 min(12vh,100px); text-align:center; }
+    .hero h1{ font-size:clamp(32px,5vw,56px); line-height:1.1; margin:0 0 14px; font-weight:900; }
+    .hero p{ color:var(--muted); margin:0 auto 22px; max-width:720px; }
+    .badges{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:10px; }
+    .badge{ padding:6px 10px; border:1px solid var(--border); border-radius:999px; background:var(--card); font-size:12px; opacity:.9 }
+
+    section{ padding:60px 0 }
+    h2{ font-size:clamp(22px,3.2vw,34px); margin:0 0 14px }
+    .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px }
+    .card{ background:var(--card); border:1px solid var(--border); border-radius:16px; padding:16px }
+    .muted{ color:var(--muted) }
+    .accent{ color:var(--accent) }
+
+    .gallery{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px }
+    .gallery img{ width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:12px; border:1px solid var(--border); cursor:zoom-in }
+
+    footer{ border-top:1px solid var(--border); background:rgba(0,0,0,.35); padding:28px 0; text-align:center; color:var(--muted) }
+
+    .floating{ position:fixed; right:16px; bottom:16px; display:flex; gap:10px; z-index:20 }
+    .floating button{ border-radius:999px; border:1px solid var(--border); background:var(--card); color:var(--text); padding:10px 12px; cursor:pointer }
+    .floating button:hover{ background:rgba(255,255,255,.12) }
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0 }
+    blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); background:rgba(255,255,255,.06); border-radius:8px }
+
+    /* Lightbox */
+    .lb-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.92); display:none; align-items:center; justify-content:center; z-index:1000; }
+    .lb-backdrop.show{ display:flex; }
+    .lb-inner{ position:relative; width:min(92vw,1200px); height:min(86vh,820px); }
+    .lb-img{ width:100%; height:100%; object-fit:contain; background:#000; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,.5); }
+    .lb-close, .lb-prev, .lb-next{
+      position:absolute; top:50%; transform:translateY(-50%); border:0; cursor:pointer;
+      background:rgba(255,255,255,.12); color:#fff; width:44px; height:44px; border-radius:999px;
+      display:flex; align-items:center; justify-content:center; font-size:20px; backdrop-filter: blur(6px); transition:.2s;
+    }
+    .lb-close{ top:14px; right:14px; transform:none; font-size:18px; width:40px; height:40px; }
+    .lb-prev{ left:-56px; } .lb-next{ right:-56px; }
+    .lb-prev:hover, .lb-next:hover, .lb-close:hover{ background:rgba(255,255,255,.2) }
+    @media (max-width: 920px){ .lb-prev{ left:8px } .lb-next{ right:8px } }
+    .lb-caption{ position:absolute; left:0; right:0; bottom:-42px; text-align:center; color:#cfd3dc; font-size:14px; }
+  </style>
+</head>
+<body>
+  <!-- ARKAPLAN VİDEO + MP3 -->
+  <div class="video-bg" aria-hidden="true">
+    <video id="bgVideo" autoplay muted loop playsinline>
+      <source src="assets/dogancayir.mp4" type="video/mp4">
+      <source src="dogancayir.mp4" type="video/mp4">
+      Tarayıcınız video etiketini desteklemiyor.
+    </video>
+    <audio id="bgAudio" autoplay loop>
+      <source src="assets/turku.mp3" type="audio/mpeg">
+      <source src="turku.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+  <div class="video-overlay" aria-hidden="true"></div>
+
+  <header>
+    <div class="container nav">
+      <div class="logo">Doğançayır<b>.TR</b></div>
+      <nav>
+        <a href="#hakkinda">Hakkında</a>
+        <a href="#kultur">Kültür</a>
+        <a href="#bilgi">Ansiklopedik Bilgiler</a>
+        <a href="#galeri">Galeri</a>
+        <a href="harita.html">Harita</a>
+        <a href="#blog">Blog</a>
+        <a href="#iletisim" class="btn">İletişim</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero container" id="hero">
+      <div class="badges">
+        <div class="badge">Eskişehir • Seyitgazi</div>
+        <div class="badge">İç Anadolu</div>
+        <div class="badge">Köy yaşamı & imece</div>
+      </div>
+      <h1>Doğançayır’ın <span class="accent">kalbine</span> hoş geldiniz</h1>
+      <p>Bu sayfa, Doğançayır’ın doğasını, insanını ve hikâyesini tek bir yerde toplar. Arkaplanda köyümüzün görüntüleri akarken; aşağıda tarihçe, kültür ve ansiklopedik bilgileri bulabilirsiniz.</p>
+      <a class="btn" href="#hakkinda">Keşfetmeye başla</a>
+    </section>
+
+    <section id="hakkinda">
+      <div class="container">
+        <h2>Hakkında</h2>
+        <p class="muted">Doğançayır, Eskişehir’in Seyitgazi ilçesine bağlı; çağdaş yaşam anlayışı, imece geleneği ve yüksek toplumsal dayanışması ile tanınan bir yerleşimdir. Temiz yollar, kooperatif kültürü ve ortak çalışma alışkanlığı köy yaşamının kalitesini yükseltir.</p>
+
+        <div class="grid" style="margin-top:16px">
+          <div class="card">
+            <h3>Geçim & Üretim</h3>
+            <p class="muted">Doğançayır’da temel geçim kaynakları <b>tarım ve hayvancılıktır</b>. Köy ekonomisi bu iki alan etrafında şekillenir.</p>
+          </div>
+          <div class="card">
+            <h3>Emek & Onur</h3>
+            <p class="muted"><b>Doğançayırlı alnının teriyle kazandığını çoluk çocuğuyla yer.</b> Her evin her üyesi çalışır; ama bir o kadar da güzel yaşar.</p>
+          </div>
+          <div class="card">
+            <h3>Toplumsal Hayat</h3>
+            <p class="muted">Kadın-erkek eşitliğine saygı, ortak eğlenceler ve güçlü dayanışma kültürü belirgindir.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="kultur">
+      <div class="container">
+        <h2>Kültür & Anılar</h2>
+        <p class="muted" style="margin-bottom:10px">Aşağıdaki alıntılar, farklı kişilerin <b>Ekşi Sözlük</b>’te paylaştığı gözlemlerden derlenmiştir.</p>
+
+        <div class="grid" style="margin-top:12px">
+          <article class="card">
+            <h3>Kimlik & Toplumsal Yapı</h3>
+            <p class="muted">Hacıbektaş’la birlikte İç Anadolu’nun <b>en aydın kasabalarından</b> biri olarak anılır. Halkı Türkmen Alevi’dir; <b>sol oy oranı %90’a yakındır</b>.</p>
+            <blockquote style="margin-top:10px">
+              “Memleketim. Aydın, açık görüşlü insanlara sahip köyüm. Alevidir.
+              Köylüm çok güzel çalışır; çoluk çocuk evin her üyesi çalışır ama çok güzel de yaşar.”
+            </blockquote>
+          </article>
+
+          <article class="card">
+            <h3>“Çağdaş köy” deneyimi</h3>
+            <blockquote>“Her ne kadar belde de olsa adı, Eskişehir’in ve Türkiye’nin en çağdaş köylerinden birisidir.”</blockquote>
+            <blockquote style="margin-top:10px">“...böyle güzel, böyle medeni insanlar görmemişim meğer o yaşa dek. Herkes birbirinin kardeşiydi; kadın erkek eşitti... Tüm köy eğlenmişti. Unutulmaz bir anı.”</blockquote>
+          </article>
+
+          <article class="card">
+            <h3>Altyapı & Düzen Hakkında Gözlemler</h3>
+            <blockquote>“Okumuşu çoktur. En basit araçlarını bile gece karayolunda aydınlatırlar. Bölgede ilçelerde bile bulunmayan traktör servislerine sahiptirler. Her kişiyi aralarına almazlar.”</blockquote>
+            <blockquote style="margin-top:10px">“Bölgede umumi tuvaletleri girilecek düzeydeki tek yerleşimdir. Ampul, çeşme musluğu çalmaz; çalınanın yerine yenisini takarlar.”</blockquote>
+            <blockquote style="margin-top:10px">“Yoldan geçenin görebileceği bu kadar. Belki içlerinde yaşasam ekleyeceğim, çıkaracağım olurdu... Anadolu’da gördüğüm en güzel köylerdendir.”</blockquote>
+          </article>
+
+          <article class="card">
+            <h3>Nâzım Hikmet’e Saygı</h3>
+            <p class="muted">Nâzım’ın “Anadolu’da bir köy mezarlığına gömün beni…” dizelerinden ilhamla, köylüler ustanın anısına simgesel bir <b>anıt gömüt</b> yaptırmış; her yıl anma düzenlenir.</p>
+            <blockquote>
+              yoldaşlar, ölürsem o günden önce yani,<br/>
+              anadolu’da bir köy mezarlığına gömün beni...<br/>
+              tepemde bir de çınar olursa<br/>
+              taş maş da istemez hani...
+            </blockquote>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="bilgi">
+      <div class="container">
+        <h2>Ansiklopedik Bilgiler</h2>
+
+        <div class="card" style="margin-bottom:16px">
+          <p class="muted">Doğançayır, Türkiye'nin Eskişehir ili, Seyitgazi ilçesine bağlı bir mahalledir. Nüfusu 774’tür (2022). 2013’te belde statüsünden mahalleye dönüşmüştür. Eski adı <b>Arapören</b>.</p>
+        </div>
+
+        <div class="grid" style="margin-top:12px">
+          <article class="card"><h3>Konum</h3><p class="muted">Eskişehir’e ~50 km, Seyitgazi’ye 26 km. Eskişehir–Ankara yolu Hamidiye kavşağına 10 km.</p></article>
+
+          <article class="card">
+            <h3>Coğrafya</h3>
+            <p class="muted">Yerleşim, Kırkkız Dağı’nın eteğinde; içinden <b>Seydisuyu</b> geçer, iki köprü ile yakalar bağlanır. Çatıören Barajı sonrası geçiş kolaylaşmıştır.</p>
+          </article>
+
+          <article class="card"><h3>Ekonomi</h3><p class="muted">Ağırlıkla <b>tarım ve hayvancılık</b>. (Şeker pancarı, buğday, ayçiçeği, yonca.)</p></article>
+
+          <article class="card">
+            <h3>Kültür</h3>
+            <p class="muted">Alevi ağırlıklı yerleşim; Sünni kökenli sakinler de vardır. 3 Haziran <b>Nâzım Hikmet Anması</b> ile bilinir.</p>
+          </article>
+
+          <article class="card">
+            <h3>Tarihçe</h3>
+            <p class="muted">Köyün yaslandığı <b>Kırgız (Kırkkız) Dağı</b>, Kütahya–Eskişehir Savaşı’nın son noktalarından biri olarak anılır. Sakarya Savaşı sonrasında Afyon–Eskişehir hattına çekilen Yunan birliklerinin kuzeydeki direnek noktası olmuştur. <b>Büyük Taarruz</b>’a kadar yaklaşık bir yıl boyunca halka yoğun şekilde eziyet edilmiş, dağın ormanları yakılmıştır.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="galeri">
+      <div class="container">
+        <h2>Galeri</h2>
+        <p class="muted">Doğançayır’dan kareler. Görselleri kendi arşivinizle değiştirebilirsiniz — tıklayınca büyür, sağ/sol ile gezinebilirsiniz.</p>
+        <div class="gallery" style="margin-top:12px">
+<img src="assets/HaciBektas.jpg" alt="Hacı Bektaş Veli figürü">
+<img src="assets/Ataturk.png" alt="Atatürk figürü ve bayrak">
+<img src="assets/Dag.png" alt="Doğançayır ve dağ silüeti">
+<img src="assets/KoyMeydan.png" alt="Köy meydanı">
+<img src="assets/Melikgazi.png" alt="Melikgazi Türbesi">
+<img src="assets/koyluler.png" alt="Köylüler ve topluluk">
+
+        </div>
+      </div>
+    </section>
+
+    <section id="blog">
+      <div class="container">
+        <h2>Blog & Duyurular</h2>
+        <div class="grid" style="margin-top:12px">
+          <article class="card">
+            <h3>Facebook Grubumuz</h3>
+            <p class="muted">Paylaşımlar ve duyurular için.</p>
+            <a class="btn" href="https://www.facebook.com/groups/800945713366564" target="_blank" rel="noopener">Gruba Katıl</a>
+          </article>
+          <article class="card">
+            <h3>Belgesel: “Kırkkız”</h3>
+            <p class="muted">Köyümüzün belgeseli YouTube’da.</p>
+            <a class="btn" href="https://youtu.be/0sf1VAMBHgA?si=uvKVuuCPEQJZSIaw" target="_blank" rel="noopener">Belgeseli İzle</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="iletisim">
+      <div class="container">
+        <h2>İletişim</h2>
+        <div class="card">
+          <p class="muted">E-posta: <a href="mailto:info@dogancayir.tr" style="color:var(--text)">info@dogancayir.tr</a></p>
+          <p class="muted">Adres: Doğançayır Köy Meydanı No:1, Seyitgazi / Eskişehir</p>
+          <p class="muted">Facebook: <a href="https://www.facebook.com/groups/800945713366564" target="_blank" rel="noopener" style="color:var(--text)">facebook.com/groups/800945713366564</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">© <span id="y"></span> Doğançayır. Tüm hakları saklıdır.</div>
+  </footer>
+
+  <div class="floating">
+    <button id="toggleAudio" aria-pressed="true" title="Türkü sesini aç/kapat">🔇<span class="sr-only">Sesi aç/kapat</span></button>
+    <button id="pausePlay" aria-pressed="false" title="Videoyu durdur/oynat">⏸️<span class="sr-only">Videoyu durdur/oynat</span></button>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lb-backdrop" id="lightbox" aria-hidden="true">
+    <div class="lb-inner">
+      <img class="lb-img" id="lbImg" alt="" />
+      <div class="lb-caption" id="lbCap"></div>
+      <button class="lb-close" id="lbClose" aria-label="Kapat">✕</button>
+      <button class="lb-prev"  id="lbPrev"  aria-label="Önceki">❮</button>
+      <button class="lb-next"  id="lbNext"  aria-label="Sonraki">❯</button>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    (function(){
+      const video = document.getElementById('bgVideo');
+      const audio = document.getElementById('bgAudio');
+      const toggleAudio = document.getElementById('toggleAudio');
+      const pausePlay = document.getElementById('pausePlay');
+
+      audio.muted = true;
+      let audioMuted = true, paused = false;
+
+      function tryPlay(){ audio.play().catch(()=>{}); video.play().catch(()=>{}); }
+      tryPlay();
+      document.addEventListener('click', tryPlay, { once:true });
+      document.addEventListener('touchstart', tryPlay, { once:true });
+
+      toggleAudio.addEventListener('click', () => {
+        audioMuted = !audioMuted;
+        audio.muted = audioMuted;
+        if (!audioMuted) audio.play().catch(()=>{});
+        toggleAudio.textContent = audioMuted ? '🔇' : '🔊';
+      });
+
+      pausePlay.addEventListener('click', () => {
+        if (paused) { video.play().catch(()=>{}); pausePlay.textContent = '⏸️'; }
+        else { video.pause(); pausePlay.textContent = '▶️'; }
+        paused = !paused;
+      });
+    })();
+
+    // Lightbox
+    (function(){
+      const thumbs = Array.from(document.querySelectorAll('.gallery img'));
+      if (!thumbs.length) return;
+
+      const lb = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lbImg');
+      const lbCap = document.getElementById('lbCap');
+      const btnPrev = document.getElementById('lbPrev');
+      const btnNext = document.getElementById('lbNext');
+      const btnClose= document.getElementById('lbClose');
+
+      let idx = 0, touchX = 0;
+
+      function show(i){
+        idx = (i + thumbs.length) % thumbs.length;
+        const t = thumbs[idx];
+        const full = t.dataset.full || t.src;
+        lbImg.src = full;
+        lbImg.alt = t.alt || '';
+        lbCap.textContent = t.alt || '';
+        lb.classList.add('show');
+        lb.setAttribute('aria-hidden','false');
+        document.body.style.overflow = 'hidden';
+      }
+      function hide(){
+        lb.classList.remove('show');
+        lb.setAttribute('aria-hidden','true');
+        document.body.style.overflow = '';
+      }
+      function next(){ show(idx+1); }
+      function prev(){ show(idx-1); }
+
+      thumbs.forEach((img,i)=> img.addEventListener('click',()=> show(i)));
+      btnNext.addEventListener('click', next);
+      btnPrev.addEventListener('click', prev);
+      btnClose.addEventListener('click', hide);
+      lb.addEventListener('click', (e)=>{ if(e.target===lb) hide(); });
+
+      window.addEventListener('keydown', (e)=>{
+        if(!lb.classList.contains('show')) return;
+        if(e.key==='Escape') hide();
+        if(e.key==='ArrowRight') next();
+        if(e.key==='ArrowLeft')  prev();
+      });
+
+      lbImg.addEventListener('touchstart', (e)=>{ touchX = e.changedTouches[0].clientX; }, {passive:true});
+      lbImg.addEventListener('touchend', (e)=>{
+        const dx = e.changedTouches[0].clientX - touchX;
+        if(Math.abs(dx) > 40){ dx<0 ? next() : prev(); }
+      }, {passive:true});
+    })();
+  </script>
+</body>
+</html>
