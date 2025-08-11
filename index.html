@@ -1,176 +1,184 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Doğançayır | Köyümüz</title>
-  <meta name="description" content="Eskişehir'in Seyitgazi ilçesine bağlı Doğançayır köyü: hikâye, kültür, galeri ve duyurular. Yerel video arkaplanlı modern tek sayfa site." />
-  <style>
-    :root{
-      --bg-dark: rgba(0,0,0,.55);
-      --bg-darker: rgba(0,0,0,.7);
-      --accent: #ffd34d;
-      --text: #f6f7fb;
-      --muted: #cfd3dc;
-      --card: rgba(255,255,255,.08);
-      --border: rgba(255,255,255,.12);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color:var(--text); background:#0b0d12; line-height:1.6; overflow-x:hidden;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Doğançayır | Köyümüz</title>
+<meta name="description" content="Eskişehir'in Seyitgazi ilçesine bağlı Doğançayır köyü: hikâye, kültür, galeri ve duyurular. Yerel video arkaplanlı modern tek sayfa site." />
+<style>
+  :root{
+    --bg-dark: rgba(0,0,0,.55);
+    --bg-darker: rgba(0,0,0,.7);
+    --accent: #ffd34d;
+    --text: #f6f7fb;
+    --muted: #cfd3dc;
+    --card: rgba(255,255,255,.10);
+    --card-strong: rgba(0,0,0,.45);
+    --border: rgba(255,255,255,.14);
+  }
 
-    /* arkaplan video */
-    .video-bg{ position:fixed; inset:0; z-index:-2; overflow:hidden; }
-    .video-bg video{
-      position:absolute; inset:0; width:100%; height:100%;
-      object-fit:cover; pointer-events:none;
-      filter:saturate(105%) contrast(105%);
-    }
-    .video-overlay{ position:fixed; inset:0;
-      background:linear-gradient(180deg, var(--bg-darker), var(--bg-dark) 40%, var(--bg-darker));
-      z-index:-1;
-    }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
+    color:var(--text); background:#0b0d12; line-height:1.6; overflow-x:hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-    /* üst bar */
-    header{ position:sticky; top:0; backdrop-filter:blur(8px);
-      background:rgba(0,0,0,.35); border-bottom:1px solid var(--border); z-index:20; }
-    .container{ width:min(1100px,92%); margin-inline:auto; }
-    .nav{ display:flex; align-items:center; justify-content:space-between; padding:12px 0; gap:12px }
-    .logo{ font-weight:800; letter-spacing:.3px; font-size:clamp(18px,2.2vw,22px); }
-    .logo b{ color:var(--accent) }
-    .nav a{ color:var(--text); text-decoration:none; opacity:.85; margin-left:18px; font-weight:600; font-size:14px; }
-    .nav a:hover{ opacity:1 }
-    .btn{ display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border:1px solid var(--border);
-      background:var(--card); color:var(--text); border-radius:999px; font-weight:600; text-decoration:none; }
-    .btn:hover{ background:rgba(255,255,255,.12) }
+  /* === Arkaplan video === */
+  .video-bg{ position:fixed; inset:0; z-index:-2; overflow:hidden; }
+  .video-bg video{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; pointer-events:none;
+    filter:saturate(105%) contrast(105%);
+  }
+  .video-overlay{ position:fixed; inset:0;
+    background:linear-gradient(180deg, rgba(0,0,0,.80), rgba(0,0,0,.55) 40%, rgba(0,0,0,.85));
+    z-index:-1;
+  }
 
-    /* hamburger butonu (desktop'ta gizli) */
-    .menu-toggle{
-      display:none; border:1px solid var(--border); background:var(--card);
-      color:var(--text); border-radius:12px; padding:8px 12px; font-weight:800; cursor:pointer;
-    }
+  /* === Layout === */
+  .container{ width:min(1000px, 94%); margin-inline:auto; }
+  header{
+    position:sticky; top:0;
+    backdrop-filter: blur(10px);
+    background: rgba(0,0,0,.35);
+    border-bottom:1px solid var(--border);
+    z-index:30;
+  }
+  .nav{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; }
+  .logo{ font-weight:900; letter-spacing:.3px; font-size:22px }
+  .logo b{ color:var(--accent) }
 
-    /* kahraman */
-    .hero{ padding:min(18vh,140px) 0 min(12vh,100px); text-align:center; }
-    .hero h1{ font-size:clamp(32px,5vw,56px); line-height:1.1; margin:0 0 14px; font-weight:900; }
-    .hero p{ color:var(--muted); margin:0 auto 22px; max-width:720px; }
-    .badges{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:10px; }
-    .badge{ padding:6px 10px; border:1px solid var(--border); border-radius:999px; background:var(--card); font-size:12px; opacity:.9 }
+  .nav a{ color:var(--text); text-decoration:none; opacity:.9; font-weight:600; font-size:15px; margin-left:18px; }
+  .nav a:hover{ opacity:1 }
 
-    section{ padding:60px 0 }
-    h2{ font-size:clamp(22px,3.2vw,34px); margin:0 0 14px }
-    .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px }
-    .card{ background:var(--card); border:1px solid var(--border); border-radius:16px; padding:16px }
-    .muted{ color:var(--muted) }
-    .accent{ color:var(--accent) }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:12px 16px;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text); border-radius:999px; font-weight:700; text-decoration:none;
+  }
+  .btn:hover{ background:rgba(255,255,255,.14) }
 
-    .gallery{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px }
-    .gallery img{ width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:12px; border:1px solid var(--border); cursor:zoom-in }
+  /* === Hamburger === */
+  .menu-toggle{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    border:1px solid var(--border); background:var(--card);
+    color:var(--text); border-radius:12px; padding:10px 12px; font-weight:800; cursor:pointer;
+  }
+  /* Tam ekran menü (mobil) */
+  .backdrop{
+    position:fixed; inset:0; background:rgba(0,0,0,.45); backdrop-filter: blur(2px);
+    opacity:0; pointer-events:none; transition:.2s; z-index:39;
+  }
+  .backdrop.show{ opacity:1; pointer-events:auto; }
+  body.menu-open{ overflow:hidden; touch-action:none; }
 
-    footer{ border-top:1px solid var(--border); background:rgba(0,0,0,.35); padding:28px 0; text-align:center; color:var(--muted) }
+  nav#siteNav{
+    position:fixed; inset:0; width:100vw; height:100dvh;
+    background:rgba(16,18,24,.96);
+    transform:translateX(100%); transition:transform .25s ease;
+    display:flex; flex-direction:column; gap:14px;
+    padding: calc(18px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom));
+    overflow:auto; z-index:40;
+  }
+  nav#siteNav.open{ transform:translateX(0); }
+  nav#siteNav a{
+    font-size:18px; padding:14px 16px;
+    border:1px solid var(--border); border-radius:12px; background:var(--card);
+    margin:0;
+  }
 
-    /* Floating controls: bigger & always on top */
-    .floating{
-      position:fixed;
-      right:14px;
-      bottom:calc(14px + env(safe-area-inset-bottom));
-      display:flex; gap:12px;
-      z-index:1000;
-    }
-    .floating button{
-      width:52px; height:52px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background:var(--card);
-      color:var(--text);
-      font-size:20px;
-      display:flex; align-items:center; justify-content:center;
-      cursor:pointer;
-    }
-    .floating button:hover{ background:rgba(255,255,255,.12) }
-    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0 }
-    blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); background:rgba(255,255,255,.06); border-radius:8px }
+  /* === Hero === */
+  .hero{ padding:20vh 0 12vh; text-align:center; }
+  .hero .panel{
+    background:var(--card-strong);
+    border:1px solid var(--border);
+    border-radius:16px;
+    backdrop-filter: blur(4px);
+    margin:0 auto; padding:20px 14px; width:min(760px, 96%);
+    box-shadow: 0 8px 30px rgba(0,0,0,.35);
+  }
+  .hero h1{ font-size: clamp(34px, 7.5vw, 56px); line-height:1.15; margin:6px 0 12px; font-weight:900; }
+  .hero p{ color:var(--muted); margin:0 auto 18px; max-width:720px; font-size:16px }
+  .badges{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:8px; }
+  .badge{ padding:7px 11px; border:1px solid var(--border); border-radius:999px; background:var(--card); font-size:12.5px; opacity:.95 }
 
-    /* Lightbox */
-    .lb-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.92); display:none; align-items:center; justify-content:center; z-index:1000; }
-    .lb-backdrop.show{ display:flex; }
-    .lb-inner{ position:relative; width:min(92vw,1200px); height:min(86vh,820px); }
-    .lb-img{ width:100%; height:100%; object-fit:contain; background:#000; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,.5); }
-    .lb-close, .lb-prev, .lb-next{
-      position:absolute; top:50%; transform:translateY(-50%); border:0; cursor:pointer;
-      background:rgba(255,255,255,.12); color:#fff; width:44px; height:44px; border-radius:999px;
-      display:flex; align-items:center; justify-content:center; font-size:20px; backdrop-filter: blur(6px); transition:.2s;
-    }
-    .lb-close{ top:14px; right:14px; transform:none; font-size:18px; width:40px; height:40px; }
-    .lb-prev{ left:-56px; } .lb-next{ right:-56px; }
-    .lb-prev:hover, .lb-next:hover, .lb-close:hover{ background:rgba(255,255,255,.2) }
-    @media (max-width: 920px){ .lb-prev{ left:8px } .lb-next{ right:8px } }
-    .lb-caption{ position:absolute; left:0; right:0; bottom:-42px; text-align:center; color:#cfd3dc; font-size:14px; }
+  /* === Sections === */
+  section{ padding:28px 0 }
+  h2{ font-size: clamp(24px, 5.5vw, 34px); margin:0 0 14px }
+  .grid{ display:grid; grid-template-columns:repeat(1,minmax(0,1fr)); gap:18px }
+  .card{
+    background:var(--card-strong); border:1px solid var(--border); border-radius:16px; padding:18px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.35);
+  }
+  .muted{ color:var(--muted) }
+  .accent{ color:var(--accent) }
 
-    /* ===== Mobil menü: tam ekran + büyük tipografi ===== */
-    .backdrop{
-      position:fixed; inset:0; background:rgba(0,0,0,.45); backdrop-filter: blur(2px);
-      opacity:0; pointer-events:none; transition:.2s; z-index:19;
-    }
-    .backdrop.show{ opacity:1; pointer-events:auto; }
-    body.menu-open{ overflow:hidden; touch-action:none; }
+  /* Galeri */
+  .gallery{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px }
+  .gallery img{ width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:12px; border:1px solid var(--border); cursor:zoom-in }
 
-    @media (max-width: 860px){
-      html, body{ font-size:16px; }
-      .container{ width:94%; }
+  footer{ border-top:1px solid var(--border); background:rgba(0,0,0,.35); padding:28px 0; text-align:center; color:var(--muted) }
 
-      .menu-toggle{ display:inline-flex; align-items:center; gap:8px }
+  /* === Floating controls (büyük) === */
+  .floating{
+    position:fixed;
+    right:14px;
+    bottom:calc(16px + env(safe-area-inset-bottom));
+    display:flex; gap:12px;
+    z-index:45;
+  }
+  .floating button{
+    width:56px; height:56px;
+    border-radius:999px; border:1px solid var(--border);
+    background:var(--card); color:var(--text);
+    font-size:22px; display:flex; align-items:center; justify-content:center; cursor:pointer;
+    box-shadow: 0 8px 30px rgba(0,0,0,.35);
+  }
+  .floating button:hover{ background:rgba(255,255,255,.14) }
+  .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0 }
+  blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); background:rgba(255,255,255,.08); border-radius:8px }
 
-      .nav nav{
-        position:fixed; inset:0; width:100vw; height:100dvh;
-        background:rgba(16,18,24,.96); border-left:1px solid var(--border);
-        transform:translateX(100%); transition:transform .25s ease;
-        display:flex; flex-direction:column; gap:14px;
-        padding: calc(18px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom));
-        overflow:auto; z-index:21;
-      }
-      .nav nav.open{ transform:translateX(0); }
-      .nav nav a{
-        font-size:18px; padding:14px 16px;
-        border:1px solid var(--border); border-radius:12px; background:var(--card); margin:0;
-      }
-      .nav{ justify-content:space-between }
+  /* Lightbox */
+  .lb-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.92); display:none; align-items:center; justify-content:center; z-index:1000; }
+  .lb-backdrop.show{ display:flex; }
+  .lb-inner{ position:relative; width:min(92vw,1200px); height:min(86vh,820px); }
+  .lb-img{ width:100%; height:100%; object-fit:contain; background:#000; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,.5); }
+  .lb-close, .lb-prev, .lb-next{
+    position:absolute; top:50%; transform:translateY(-50%); border:0; cursor:pointer;
+    background:rgba(255,255,255,.12); color:#fff; width:44px; height:44px; border-radius:999px;
+    display:flex; align-items:center; justify-content:center; font-size:20px; backdrop-filter: blur(6px);
+  }
+  .lb-close{ top:14px; right:14px; transform:none; font-size:18px; width:40px; height:40px; }
+  .lb-prev{ left:-56px; } .lb-next{ right:-56px; }
+  @media (max-width: 920px){ .lb-prev{ left:8px } .lb-next{ right:8px } }
+  .lb-caption{ position:absolute; left:0; right:0; bottom:-42px; text-align:center; color:#cfd3dc; font-size:14px; }
 
-      .hero{ padding:18vh 0 12vh; }
-      .hero h1{ font-size:clamp(32px, 8.5vw, 56px); }
-      .hero p{ font-size:15.5px; max-width:720px; padding:0 6px; }
-
-      .badge{ font-size:12.5px; padding:6px 10px }
-      .grid{ gap:18px }
-      .card{ padding:18px }
-
-      .video-overlay{
-        background:linear-gradient(180deg, rgba(0,0,0,.75), rgba(0,0,0,.55) 40%, rgba(0,0,0,.78));
-      }
-
-      .floating{ right:14px; bottom:calc(14px + env(safe-area-inset-bottom)); }
-    }
-
-    @media (max-width:420px){
-      .badge{ font-size:11.5px; padding:5px 9px }
-      .grid{ gap:14px }
-    }
-  </style>
+  /* === Desktop düzeni === */
+  @media (min-width: 861px){
+    .container{ width:min(1100px, 92%); }
+    nav#siteNav{ position:static; transform:none; height:auto; background:transparent; padding:0; display:flex; flex-direction:row; gap:0; overflow:visible }
+    nav#siteNav a{ border:0; background:transparent; margin-left:18px; font-size:14px; padding:0 }
+    .menu-toggle, .backdrop{ display:none }
+    .hero{ padding:min(18vh,160px) 0 min(12vh,120px); }
+    .hero .panel{ background:var(--card-strong); width:min(820px, 92%); padding:26px 22px }
+    .grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .gallery{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+  }
+</style>
 </head>
 <body>
   <!-- ARKAPLAN VİDEO + MP3 -->
   <div class="video-bg" aria-hidden="true">
     <video id="bgVideo" autoplay muted loop playsinline preload="metadata" poster="assets/KoyMeydan.png">
-      <!-- Mobil için küçük sürüm -->
       <source src="assets/dogancayir_mobile.mp4" type="video/mp4" media="(max-width: 768px)">
-      <!-- Masaüstü için optimize sürüm -->
       <source src="assets/dogancayir_desktop.mp4" type="video/mp4">
       Tarayıcınız video etiketini desteklemiyor.
     </video>
-    <!-- playlist JS ile yönetilecek; loop'u kaldırdık -->
+    <!-- playlist JS ile yönetilecek -->
     <audio id="bgAudio" preload="none"></audio>
   </div>
   <div class="video-overlay" aria-hidden="true"></div>
@@ -194,34 +202,26 @@
 
   <main>
     <section class="hero container" id="hero">
-      <div class="badges">
-        <div class="badge">Eskişehir • Seyitgazi</div>
-        <div class="badge">İç Anadolu</div>
-        <div class="badge">Köy yaşamı & imece</div>
+      <div class="panel">
+        <div class="badges">
+          <div class="badge">Eskişehir • Seyitgazi</div>
+          <div class="badge">İç Anadolu</div>
+          <div class="badge">Köy yaşamı & imece</div>
+        </div>
+        <h1>Doğançayır’ın <span class="accent">kalbine</span> hoş geldiniz</h1>
+        <p>Bu sayfa, Doğançayır’ın doğasını, insanını ve hikâyesini tek bir yerde toplar. Arkaplanda köyümüzün görüntüleri akarken; aşağıda tarihçe, kültür ve ansiklopedik bilgileri bulabilirsiniz.</p>
+        <a class="btn" href="#hakkinda">Keşfetmeye başla</a>
       </div>
-      <h1>Doğançayır’ın <span class="accent">kalbine</span> hoş geldiniz</h1>
-      <p>Bu sayfa, Doğançayır’ın doğasını, insanını ve hikâyesini tek bir yerde toplar. Arkaplanda köyümüzün görüntüleri akarken; aşağıda tarihçe, kültür ve ansiklopedik bilgileri bulabilirsiniz.</p>
-      <a class="btn" href="#hakkinda">Keşfetmeye başla</a>
     </section>
 
     <section id="hakkinda">
       <div class="container">
         <h2>Hakkında</h2>
         <p class="muted">Doğançayır, Eskişehir’in Seyitgazi ilçesine bağlı; çağdaş yaşam anlayışı, imece geleneği ve yüksek toplumsal dayanışması ile tanınan bir yerleşimdir. Temiz yollar, kooperatif kültürü ve ortak çalışma alışkanlığı köy yaşamının kalitesini yükseltir.</p>
-
         <div class="grid" style="margin-top:16px">
-          <div class="card">
-            <h3>Geçim & Üretim</h3>
-            <p class="muted">Doğançayır’da temel geçim kaynakları <b>tarım ve hayvancılıktır</b>. Köy ekonomisi bu iki alan etrafında şekillenir.</p>
-          </div>
-          <div class="card">
-            <h3>Emek & Onur</h3>
-            <p class="muted"><b>Doğançayırlı alnının teriyle kazandığını çoluk çocuğuyla yer.</b> Her evin her üyesi çalışır; ama bir o kadar da güzel yaşar.</p>
-          </div>
-          <div class="card">
-            <h3>Toplumsal Hayat</h3>
-            <p class="muted">Kadın-erkek eşitliğine saygı, ortak eğlenceler ve güçlü dayanışma kültürü belirgindir.</p>
-          </div>
+          <div class="card"><h3>Geçim & Üretim</h3><p class="muted">Doğançayır’da temel geçim kaynakları <b>tarım ve hayvancılıktır</b>. Köy ekonomisi bu iki alan etrafında şekillenir.</p></div>
+          <div class="card"><h3>Emek & Onur</h3><p class="muted"><b>Doğançayırlı alnının teriyle kazandığını çoluk çocuğuyla yer.</b> Her evin her üyesi çalışır; ama bir o kadar da güzel yaşar.</p></div>
+          <div class="card"><h3>Toplumsal Hayat</h3><p class="muted">Kadın-erkek eşitliğine saygı, ortak eğlenceler ve güçlü dayanışma kültürü belirgindir.</p></div>
         </div>
       </div>
     </section>
@@ -230,39 +230,28 @@
       <div class="container">
         <h2>Kültür & Anılar</h2>
         <p class="muted" style="margin-bottom:10px">Aşağıdaki alıntılar, farklı kişilerin <b>Ekşi Sözlük</b>’te paylaştığı gözlemlerden derlenmiştir.</p>
-
         <div class="grid" style="margin-top:12px">
           <article class="card">
             <h3>Kimlik & Toplumsal Yapı</h3>
             <p class="muted">Hacıbektaş’la birlikte İç Anadolu’nun <b>en aydın kasabalarından</b> biri olarak anılır. Halkı Türkmen Alevi’dir; <b>sol oy oranı %90’a yakındır</b>.</p>
-            <blockquote style="margin-top:10px">
-              “Memleketim. Aydın, açık görüşlü insanlara sahip köyüm. Alevidir.
-              Köylüm çok güzel çalışır; çoluk çocuk evin her üyesi çalışır ama çok güzel de yaşar.”
-            </blockquote>
+            <blockquote style="margin-top:10px">“Memleketim. Aydın, açık görüşlü insanlara sahip köyüm. Alevidir.
+            Köylüm çok güzel çalışır; çoluk çocuk evin her üyesi çalışır ama çok güzel de yaşar.”</blockquote>
           </article>
-
           <article class="card">
             <h3>“Çağdaş köy” deneyimi</h3>
             <blockquote>“Her ne kadar belde de olsa adı, Eskişehir’in ve Türkiye’nin en çağdaş köylerinden birisidir.”</blockquote>
             <blockquote style="margin-top:10px">“...böyle güzel, böyle medeni insanlar görmemişim meğer o yaşa dek. Herkes birbirinin kardeşiydi; kadın erkek eşitti... Tüm köy eğlenmişti. Unutulmaz bir anı.”</blockquote>
           </article>
-
           <article class="card">
             <h3>Altyapı & Düzen Hakkında Gözlemler</h3>
             <blockquote>“Okumuşu çoktur. En basit araçlarını bile gece karayolunda aydınlatırlar. Bölgede ilçelerde bile bulunmayan traktör servislerine sahiptirler. Her kişiyi aralarına almazlar.”</blockquote>
             <blockquote style="margin-top:10px">“Bölgede umumi tuvaletleri girilecek düzeydeki tek yerleşimdir. Ampul, çeşme musluğu çalmaz; çalınanın yerine yenisini takarlar.”</blockquote>
             <blockquote style="margin-top:10px">“Yoldan geçenin görebileceği bu kadar. Belki içlerinde yaşasam ekleyeceğim, çıkaracağım olurdu... Anadolu’da gördüğüm en güzel köylerdendir.”</blockquote>
           </article>
-
           <article class="card">
             <h3>Nâzım Hikmet’e Saygı</h3>
             <p class="muted">Nâzım’ın “Anadolu’da bir köy mezarlığına gömün beni…” dizelerinden ilhamla, köylüler ustanın anısına simgesel bir <b>anıt gömüt</b> yaptırmış; her yıl anma düzenlenir.</p>
-            <blockquote>
-              yoldaşlar, ölürsem o günden önce yani,<br/>
-              anadolu’da bir köy mezarlığına gömün beni...<br/>
-              tepemde bir de çınar olursa<br/>
-              taş maş da istemez hani...
-            </blockquote>
+            <blockquote>yoldaşlar, ölürsem o günden önce yani,<br/>anadolu’da bir köy mezarlığına gömün beni...<br/>tepemde bir de çınar olursa<br/>taş maş da istemez hani...</blockquote>
           </article>
         </div>
       </div>
@@ -271,30 +260,15 @@
     <section id="bilgi">
       <div class="container">
         <h2>Ansiklopedik Bilgiler</h2>
-
         <div class="card" style="margin-bottom:16px">
           <p class="muted">Doğançayır, Türkiye'nin Eskişehir ili, Seyitgazi ilçesine bağlı bir mahalledir. Nüfusu 774’tür (2022). 2013’te belde statüsünden mahalleye dönüşmüştür. Eski adı <b>Arapören</b>.</p>
         </div>
-
         <div class="grid" style="margin-top:12px">
           <article class="card"><h3>Konum</h3><p class="muted">Eskişehir’e ~50 km, Seyitgazi’ye 26 km. Eskişehir–Ankara yolu Hamidiye kavşağına 10 km.</p></article>
-
-          <article class="card">
-            <h3>Coğrafya</h3>
-            <p class="muted">Yerleşim, Kırkkız Dağı’nın eteğinde; içinden <b>Seydisuyu</b> geçer, iki köprü ile yakalar bağlanır. Çatıören Barajı sonrası geçiş kolaylaşmıştır.</p>
-          </article>
-
+          <article class="card"><h3>Coğrafya</h3><p class="muted">Yerleşim, Kırkkız Dağı’nın eteğinde; içinden <b>Seydisuyu</b> geçer, iki köprü ile yakalar bağlanır. Çatıören Barajı sonrası geçiş kolaylaşmıştır.</p></article>
           <article class="card"><h3>Ekonomi</h3><p class="muted">Ağırlıkla <b>tarım ve hayvancılık</b>. (Şeker pancarı, buğday, ayçiçeği, yonca.)</p></article>
-
-          <article class="card">
-            <h3>Kültür</h3>
-            <p class="muted">Alevi ağırlıklı yerleşim; Sünni kökenli sakinler de vardır. 3 Haziran <b>Nâzım Hikmet Anması</b> ile bilinir.</p>
-          </article>
-
-          <article class="card">
-            <h3>Tarihçe</h3>
-            <p class="muted">Köyün yaslandığı <b>Kırgız (Kırkkız) Dağı</b>, Kütahya–Eskişehir Savaşı’nın son noktalarından biri olarak anılır. Sakarya Savaşı sonrasında Afyon–Eskişehir hattına çekilen Yunan birliklerinin kuzeydeki direnek noktası olmuştur. <b>Büyük Taarruz</b>’a kadar yaklaşık bir yıl boyunca halka yoğun şekilde eziyet edilmiş, dağın ormanları yakılmıştır.</p>
-          </article>
+          <article class="card"><h3>Kültür</h3><p class="muted">Alevi ağırlıklı yerleşim; Sünni kökenli sakinler de vardır. 3 Haziran <b>Nâzım Hikmet Anması</b> ile bilinir.</p></article>
+          <article class="card"><h3>Tarihçe</h3><p class="muted">Köyün yaslandığı <b>Kırgız (Kırkkız) Dağı</b>, Kütahya–Eskişehir Savaşı’nın son noktalarından biri olarak anılır...</p></article>
         </div>
       </div>
     </section>
@@ -344,10 +318,9 @@
     </section>
   </main>
 
-  <footer>
-    <div class="container">© <span id="y"></span> Doğançayır. Tüm hakları saklıdır.</div>
-  </footer>
+  <footer><div class="container">© <span id="y"></span> Doğançayır. Tüm hakları saklıdır.</div></footer>
 
+  <!-- Büyük, erişilebilir kontroller -->
   <div class="floating">
     <button id="toggleAudio" aria-pressed="true" title="Türkü sesini aç/kapat">🔇<span class="sr-only">Sesi aç/kapat</span></button>
     <button id="pausePlay" aria-pressed="false" title="Videoyu durdur/oynat">⏸️<span class="sr-only">Videoyu durdur/oynat</span></button>
@@ -364,144 +337,99 @@
     </div>
   </div>
 
-  <script>
-    // footer yılı
-    document.getElementById('y').textContent = new Date().getFullYear();
+<script>
+  // yıl
+  document.getElementById('y').textContent = new Date().getFullYear();
 
-    // Video + ses kontrolü ve random playlist
-    (function(){
-      const video = document.getElementById('bgVideo');
-      const audio = document.getElementById('bgAudio');
-      const toggleAudio = document.getElementById('toggleAudio');
-      const pausePlay = document.getElementById('pausePlay');
+  // Video + random playlist
+  (function(){
+    const video = document.getElementById('bgVideo');
+    const audio = document.getElementById('bgAudio');
+    const toggleAudio = document.getElementById('toggleAudio');
+    const pausePlay = document.getElementById('pausePlay');
 
-      // --- MP3 playlist (dosya adlarını sizdeki isimlere göre ayarlayın) ---
-      const tracks = ['assets/turku.mp3','assets/turku2.mp3','assets/turku3.mp3'];
-      // rastgele sıraya diz
-      const order = tracks
-        .map((t,i)=>({t, r:Math.random()}))
-        .sort((a,b)=>a.r-b.r)
-        .map(x=>x.t);
-      let i = 0;
-      function loadTrack(k){
-        audio.src = order[k];
-        if (!audio.muted) audio.play().catch(()=>{});
-      }
-      audio.addEventListener('ended', ()=>{
-        i = (i + 1) % order.length;
-        loadTrack(i);
-      });
-      // ---------------------------------------------------------------------
+    // mp3'ler — isimleri sende ne ise ona göre düzenle
+    const tracks = ['assets/turku.mp3','assets/turku2.mp3','assets/turku3.mp3'];
+    const order = tracks.map(t=>({t, r:Math.random()})).sort((a,b)=>a.r-b.r).map(x=>x.t);
+    let idx = 0;
+    function loadTrack(i){
+      audio.src = order[i];
+      if (!audio.muted) audio.play().catch(()=>{});
+    }
+    audio.addEventListener('ended', ()=>{ idx = (idx+1)%order.length; loadTrack(idx); });
 
-      audio.muted = true;
-      let audioMuted = true, paused = false;
+    audio.muted = true;
+    let audioMuted = true, paused = false;
 
-      function tryPlay(){
-        video.play().catch(()=>{});
-        // audio iOS kısıtı yüzünden sessiz başlar; kaynak yükle:
-        loadTrack(0);
-        audio.play().catch(()=>{});
-      }
-      tryPlay();
-      document.addEventListener('click', tryPlay, { once:true });
-      document.addEventListener('touchstart', tryPlay, { once:true });
+    function tryPlay(){
+      video.play().catch(()=>{});
+      loadTrack(0);
+      audio.play().catch(()=>{});
+    }
+    tryPlay();
+    document.addEventListener('click', tryPlay, { once:true });
+    document.addEventListener('touchstart', tryPlay, { once:true });
 
-      toggleAudio.addEventListener('click', () => {
-        audioMuted = !audioMuted;
-        audio.muted = audioMuted;
-        if (!audioMuted) { audio.play().catch(()=>{}); }
-        toggleAudio.textContent = audioMuted ? '🔇' : '🔊';
-      });
+    toggleAudio.addEventListener('click', () => {
+      audioMuted = !audioMuted;
+      audio.muted = audioMuted;
+      if (!audioMuted) audio.play().catch(()=>{});
+      toggleAudio.textContent = audioMuted ? '🔇' : '🔊';
+    });
 
-      pausePlay.addEventListener('click', () => {
-        if (paused) { video.play().catch(()=>{}); pausePlay.textContent = '⏸️'; }
-        else { video.pause(); pausePlay.textContent = '▶️'; }
-        paused = !paused;
-      });
-    })();
+    pausePlay.addEventListener('click', () => {
+      if (paused) { video.play().catch(()=>{}); pausePlay.textContent = '⏸️'; }
+      else { video.pause(); pausePlay.textContent = '▶️'; }
+      paused = !paused;
+    });
+  })();
 
-    // Mobil hamburger menü (tam ekran + scroll kilidi)
-    (function(){
-      const toggle = document.getElementById('menuToggle');
-      const nav = document.getElementById('siteNav');
-      const backdrop = document.getElementById('menuBackdrop');
+  // Mobil menü
+  (function(){
+    const toggle = document.getElementById('menuToggle');
+    const nav = document.getElementById('siteNav');
+    const backdrop = document.getElementById('menuBackdrop');
 
-      function openMenu(){
-        nav.classList.add('open');
-        backdrop.classList.add('show');
-        document.body.classList.add('menu-open');
-        toggle.setAttribute('aria-expanded','true');
-        toggle.textContent = '✕ Kapat';
-      }
-      function closeMenu(){
-        nav.classList.remove('open');
-        backdrop.classList.remove('show');
-        document.body.classList.remove('menu-open');
-        toggle.setAttribute('aria-expanded','false');
-        toggle.textContent = '☰ Menü';
-      }
+    function openMenu(){ nav.classList.add('open'); backdrop.classList.add('show'); document.body.classList.add('menu-open'); toggle.setAttribute('aria-expanded','true'); toggle.textContent='✕ Kapat'; }
+    function closeMenu(){ nav.classList.remove('open'); backdrop.classList.remove('show'); document.body.classList.remove('menu-open'); toggle.setAttribute('aria-expanded','false'); toggle.textContent='☰ Menü'; }
 
-      toggle.addEventListener('click', () => {
-        nav.classList.contains('open') ? closeMenu() : openMenu();
-      });
-      backdrop.addEventListener('click', closeMenu);
-      window.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
-      document.querySelectorAll('#siteNav a').forEach(a => a.addEventListener('click', closeMenu));
-      window.addEventListener('resize', () => { if (window.innerWidth > 860) closeMenu(); });
-    })();
+    toggle.addEventListener('click', ()=> nav.classList.contains('open') ? closeMenu() : openMenu());
+    backdrop.addEventListener('click', closeMenu);
+    window.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+    document.querySelectorAll('#siteNav a').forEach(a => a.addEventListener('click', closeMenu));
+    window.addEventListener('resize', ()=>{ if (window.innerWidth >= 861) closeMenu(); });
+  })();
 
-    // Lightbox
-    (function(){
-      const thumbs = Array.from(document.querySelectorAll('.gallery img'));
-      if (!thumbs.length) return;
+  // Lightbox
+  (function(){
+    const thumbs = Array.from(document.querySelectorAll('.gallery img'));
+    if (!thumbs.length) return;
 
-      const lb = document.getElementById('lightbox');
-      const lbImg = document.getElementById('lbImg');
-      const lbCap = document.getElementById('lbCap');
-      const btnPrev = document.getElementById('lbPrev');
-      const btnNext = document.getElementById('lbNext');
-      const btnClose= document.getElementById('lbClose');
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lbImg');
+    const lbCap = document.getElementById('lbCap');
+    const btnPrev = document.getElementById('lbPrev');
+    const btnNext = document.getElementById('lbNext');
+    const btnClose= document.getElementById('lbClose');
 
-      let idx = 0, touchX = 0;
+    let i = 0, touchX = 0;
+    function show(k){
+      i = (k + thumbs.length) % thumbs.length;
+      const t = thumbs[i];
+      const full = t.dataset.full || t.src;
+      lbImg.src = full; lbImg.alt = t.alt || ''; lbCap.textContent = t.alt || '';
+      lb.classList.add('show'); lb.setAttribute('aria-hidden','false'); document.body.style.overflow = 'hidden';
+    }
+    function hide(){ lb.classList.remove('show'); lb.setAttribute('aria-hidden','true'); document.body.style.overflow = ''; }
+    function next(){ show(i+1); } function prev(){ show(i-1); }
 
-      function show(i){
-        idx = (i + thumbs.length) % thumbs.length;
-        const t = thumbs[idx];
-        const full = t.dataset.full || t.src;
-        lbImg.src = full;
-        lbImg.alt = t.alt || '';
-        lbCap.textContent = t.alt || '';
-        lb.classList.add('show');
-        lb.setAttribute('aria-hidden','false');
-        document.body.style.overflow = 'hidden';
-      }
-      function hide(){
-        lb.classList.remove('show');
-        lb.setAttribute('aria-hidden','true');
-        document.body.style.overflow = '';
-      }
-      function next(){ show(idx+1); }
-      function prev(){ show(idx-1); }
-
-      thumbs.forEach((img,i)=> img.addEventListener('click',()=> show(i)));
-      btnNext.addEventListener('click', next);
-      btnPrev.addEventListener('click', prev);
-      btnClose.addEventListener('click', hide);
-      lb.addEventListener('click', (e)=>{ if(e.target===lb) hide(); });
-
-      window.addEventListener('keydown', (e)=>{
-        if(!lb.classList.contains('show')) return;
-        if(e.key==='Escape') hide();
-        if(e.key==='ArrowRight') next();
-        if(e.key==='ArrowLeft')  prev();
-      });
-
-      lbImg.addEventListener('touchstart', (e)=>{ touchX = e.changedTouches[0].clientX; }, {passive:true});
-      lbImg.addEventListener('touchend', (e)=>{
-        const dx = e.changedTouches[0].clientX - touchX;
-        if(Math.abs(dx) > 40){ dx<0 ? next() : prev(); }
-      }, {passive:true});
-    })();
-  </script>
+    thumbs.forEach((img,k)=> img.addEventListener('click',()=> show(k)));
+    btnNext.addEventListener('click', next); btnPrev.addEventListener('click', prev); btnClose.addEventListener('click', hide);
+    lb.addEventListener('click', e=>{ if(e.target===lb) hide(); });
+    window.addEventListener('keydown', e=>{ if(!lb.classList.contains('show')) return; if(e.key==='Escape') hide(); if(e.key==='ArrowRight') next(); if(e.key==='ArrowLeft') prev(); });
+    lbImg.addEventListener('touchstart', e=>{ touchX = e.changedTouches[0].clientX; }, {passive:true});
+    lbImg.addEventListener('touchend', e=>{ const dx = e.changedTouches[0].clientX - touchX; if(Math.abs(dx)>40){ dx<0 ? next() : prev(); } }, {passive:true});
+  })();
+</script>
 </body>
 </html>
