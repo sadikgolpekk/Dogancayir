@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -5,6 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Doğançayır | Köyümüz</title>
 <meta name="description" content="Eskişehir'in Seyitgazi ilçesine bağlı Doğançayır köyü: hikâye, kültür, galeri ve duyurular. Yerel video arkaplanlı modern tek sayfa site." />
+
+<!-- Leaflet (HARİTA) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+
 <style>
   :root{
     --bg-dark: rgba(0,0,0,.55);
@@ -107,6 +112,9 @@
   .gallery{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px }
   .gallery img{ width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:12px; border:1px solid var(--border); cursor:zoom-in }
 
+  /* HARİTA */
+  #map{ height: clamp(380px, 60vh, 640px); border:1px solid var(--border); border-radius:16px; }
+
   footer{ border-top:1px solid var(--border); background:rgba(0,0,0,.35); padding:28px 0; text-align:center; color:var(--muted) }
 
   /* === Floating controls (büyük) === */
@@ -143,35 +151,17 @@
   @media (max-width: 920px){ .lb-prev{ left:8px } .lb-next{ right:8px } }
   .lb-caption{ position:absolute; left:0; right:0; bottom:-42px; text-align:center; color:#cfd3dc; font-size:14px; }
 
-  /* === MOBILE: kartları ortala ve sabit genişlikte tut === */
+  /* === MOBILE === */
   @media (max-width: 860px){
-    .hero .panel{
-      width: min(94vw, 360px);
-      margin-inline: auto;
-    }
-    .card{
-      width: min(94vw, 360px);
-      margin-inline: auto;
-    }
-    .grid{
-      grid-template-columns: 1fr;
-      justify-items: center;
-    }
-    .gallery{
-      justify-items: center;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-    }
-    .gallery img{
-      width: min(28vw, 180px);
-    }
-    .floating{
-      right: 14px;
-      bottom: calc(16px + env(safe-area-inset-bottom));
-    }
+    .hero .panel{ width: min(94vw, 360px); margin-inline: auto; }
+    .card{ width: min(94vw, 360px); margin-inline: auto; }
+    .grid{ grid-template-columns: 1fr; justify-items: center; }
+    .gallery{ justify-items: center; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .gallery img{ width: min(28vw, 180px); }
+    .floating{ right: 14px; bottom: calc(16px + env(safe-area-inset-bottom)); }
   }
 
-  /* === Desktop düzeni === */
+  /* === Desktop === */
   @media (min-width: 861px){
     .container{ width:min(1100px, 92%); }
     nav#siteNav{ position:static; transform:none; height:auto; background:transparent; padding:0; display:flex; flex-direction:row; gap:0; overflow:visible }
@@ -191,7 +181,6 @@
       <source src="assets/dogancayir_desktop.mp4" type="video/mp4">
       Tarayıcınız video etiketini desteklemiyor.
     </video>
-    <!-- playlist JS ile yönetilecek -->
     <audio id="bgAudio" preload="none"></audio>
   </div>
   <div class="video-overlay" aria-hidden="true"></div>
@@ -199,13 +188,12 @@
   <header>
     <div class="container nav">
       <div class="logo">Doğançayır<b>.TR</b></div>
-      <!-- HAMBURGER YOK -->
       <nav id="siteNav" role="navigation">
         <a href="#hakkinda">Hakkında</a>
         <a href="#kultur">Kültür</a>
         <a href="#bilgi">Ansiklopedik Bilgiler</a>
         <a href="#galeri">Galeri</a>
-        <a href="harita.html">Harita</a>
+        <a href="#harita">Harita</a>
         <a href="#blog">Blog</a>
         <a href="#iletisim" class="btn">İletişim</a>
       </nav>
@@ -300,6 +288,19 @@
       </div>
     </section>
 
+    <!-- === SADE HARİTA + TKGM BUTON === -->
+    <section id="harita">
+      <div class="container">
+        <h2>Harita</h2>
+        <div class="card">
+          <div id="map"></div>
+          <div style="margin-top:12px">
+            <a class="btn" href="https://parselsorgu.tkgm.gov.tr/" target="_blank" rel="noopener">🧭 TKGM Parsel Sorgu</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="blog">
       <div class="container">
         <h2>Blog & Duyurular</h2>
@@ -349,6 +350,9 @@
     </div>
   </div>
 
+  <!-- Leaflet JS (HARİTA) -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
 <script>
   // yıl
   document.getElementById('y').textContent = new Date().getFullYear();
@@ -393,6 +397,44 @@
       else { video.pause(); pausePlay.textContent = '▶️'; }
       paused = !paused;
     });
+  })();
+
+  // HARİTA – Doğançayır’a odak + marker (Nominatim geocode)
+  (function(){
+    const NAME = 'Doğançayır, Seyitgazi, Eskişehir, Türkiye';
+    const FALLBACK = [39.34, 30.63]; // Geocode olmazsa burası
+
+    const map = L.map('map', { zoomControl:true }).setView(FALLBACK, 12);
+
+    const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19, attribution: '© OpenStreetMap katkıcıları'
+    }).addTo(map);
+
+    const sat = L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      { maxZoom: 19, attribution: 'Tiles © Esri' }
+    );
+    L.control.layers({ 'Harita': osm, 'Uydu': sat }).addTo(map);
+
+    fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=tr&q=' + encodeURIComponent(NAME))
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(arr => {
+        if (!arr || !arr[0]) throw new Error('nohit');
+        const lat = parseFloat(arr[0].lat);
+        const lon = parseFloat(arr[0].lon);
+
+        const marker = L.marker([lat, lon]).addTo(map).bindPopup(`<b>${NAME}</b>`);
+        const circle = L.circle([lat, lon], { radius: 900, color: '#ffd34d', weight: 2, fillOpacity: 0.12 }).addTo(map);
+
+        map.fitBounds(circle.getBounds(), { padding: [20,20] });
+        marker.openPopup();
+      })
+      .catch(() => {
+        const m = L.marker(FALLBACK).addTo(map).bindPopup(`<b>${NAME}</b>`);
+        const c = L.circle(FALLBACK, { radius: 900, color: '#ffd34d', weight: 2, fillOpacity: 0.12 }).addTo(map);
+        map.fitBounds(c.getBounds(), { padding: [20,20] });
+        m.openPopup();
+      });
   })();
 
   // Lightbox
