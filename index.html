@@ -22,11 +22,10 @@
       color:var(--text); background:#0b0d12; line-height:1.6; overflow-x:hidden;
     }
 
+    /* arkaplan video */
     .video-bg{ position:fixed; inset:0; z-index:-2; overflow:hidden; }
-    /* videoyu her cihazda ekrana tam oturt */
     .video-bg video{
-      position:absolute; inset:0;
-      width:100%; height:100%;
+      position:absolute; inset:0; width:100%; height:100%;
       object-fit:cover; pointer-events:none;
       filter:saturate(105%) contrast(105%);
     }
@@ -35,6 +34,7 @@
       z-index:-1;
     }
 
+    /* üst bar */
     header{ position:sticky; top:0; backdrop-filter:blur(8px);
       background:rgba(0,0,0,.35); border-bottom:1px solid var(--border); z-index:20; }
     .container{ width:min(1100px,92%); margin-inline:auto; }
@@ -53,6 +53,7 @@
       color:var(--text); border-radius:12px; padding:8px 12px; font-weight:800; cursor:pointer;
     }
 
+    /* kahraman */
     .hero{ padding:min(18vh,140px) 0 min(12vh,100px); text-align:center; }
     .hero h1{ font-size:clamp(32px,5vw,56px); line-height:1.1; margin:0 0 14px; font-weight:900; }
     .hero p{ color:var(--muted); margin:0 auto 22px; max-width:720px; }
@@ -93,33 +94,42 @@
     @media (max-width: 920px){ .lb-prev{ left:8px } .lb-next{ right:8px } }
     .lb-caption{ position:absolute; left:0; right:0; bottom:-42px; text-align:center; color:#cfd3dc; font-size:14px; }
 
-    /* ===== Mobil hamburger menü ===== */
+    /* ===== Mobil menü: tam ekran + arka plan ===== */
     .backdrop{
       position:fixed; inset:0; background:rgba(0,0,0,.45); backdrop-filter: blur(2px);
       opacity:0; pointer-events:none; transition:.2s; z-index:19;
     }
     .backdrop.show{ opacity:1; pointer-events:auto; }
+    body.menu-open{ overflow:hidden; touch-action:none; }
 
     @media (max-width: 860px){
       .menu-toggle{ display:inline-flex; align-items:center; gap:8px }
-      /* nav'ı sağdan kayan çekmeceye çevir */
+
+      /* çekmece yerine TAM EKRAN menü */
       .nav nav{
-        position:fixed; top:0; right:0; bottom:0; width:min(86vw, 320px);
+        position:fixed; inset:0; width:100vw; height:100dvh;
         background:rgba(16,18,24,.96); border-left:1px solid var(--border);
         transform:translateX(100%); transition:transform .25s ease;
-        display:flex; flex-direction:column; gap:12px; padding:72px 16px 16px; z-index:21;
+        display:flex; flex-direction:column; gap:12px;
+        padding: calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));
+        overflow:auto; z-index:21;
       }
       .nav nav.open{ transform:translateX(0); }
-      .nav nav a{ margin:0; font-size:16px; padding:10px 12px; border:1px solid var(--border); border-radius:12px; background:var(--card) }
-      /* üst bar: logo solda, hamburger sağda */
+      .nav nav a{
+        margin:0; font-size:16px; padding:12px 14px;
+        border:1px solid var(--border); border-radius:12px; background:var(--card)
+      }
+
       .nav{ justify-content:space-between }
-      /* kahraman bölümünü biraz sık */
       .hero{ padding: 14vh 0 8vh; }
       .hero h1{ font-size: clamp(26px, 8vw, 36px); }
       .hero p{ font-size:14px; padding:0 6px }
-      .video-overlay{ background:linear-gradient(180deg, rgba(0,0,0,.75), rgba(0,0,0,.55) 40%, rgba(0,0,0,.75)); }
+      .video-overlay{
+        background:linear-gradient(180deg, rgba(0,0,0,.75), rgba(0,0,0,.55) 40%, rgba(0,0,0,.75));
+      }
       .floating{ right:12px; bottom: calc(12px + env(safe-area-inset-bottom)); }
     }
+
     @media (max-width:420px){
       .badge{ font-size:11px; padding:5px 8px }
       .grid{ gap:12px }
@@ -132,7 +142,7 @@
     <video id="bgVideo" autoplay muted loop playsinline preload="metadata" poster="assets/KoyMeydan.png">
       <!-- Mobil için küçük sürüm -->
       <source src="assets/dogancayir_mobile.mp4" type="video/mp4" media="(max-width: 768px)">
-      <!-- Masaüstü için tam sürüm -->
+      <!-- Masaüstü için optimize sürüm (senin dosya adı) -->
       <source src="assets/dogancayir_desktop.mp4" type="video/mp4">
       Tarayıcınız video etiketini desteklemiyor.
     </video>
@@ -148,7 +158,7 @@
       <div class="logo">Doğançayır<b>.TR</b></div>
       <!-- hamburger -->
       <button id="menuToggle" class="menu-toggle" aria-expanded="false" aria-controls="siteNav">☰ Menü</button>
-      <!-- normal gezinme (mobilde çekmece olur) -->
+      <!-- normal gezinme (mobilde tam ekran açılır) -->
       <nav id="siteNav" role="navigation">
         <a href="#hakkinda">Hakkında</a>
         <a href="#kultur">Kültür</a>
@@ -336,8 +346,10 @@
   </div>
 
   <script>
+    // footer yılı
     document.getElementById('y').textContent = new Date().getFullYear();
 
+    // video + ses kontrolü
     (function(){
       const video = document.getElementById('bgVideo');
       const audio = document.getElementById('bgAudio');
@@ -366,7 +378,7 @@
       });
     })();
 
-    // Mobil hamburger menü kontrolü
+    // Mobil hamburger menü kontrolü (tam ekran + scroll kilidi)
     (function(){
       const toggle = document.getElementById('menuToggle');
       const nav = document.getElementById('siteNav');
@@ -375,14 +387,16 @@
       function openMenu(){
         nav.classList.add('open');
         backdrop.classList.add('show');
+        document.body.classList.add('menu-open');
         toggle.setAttribute('aria-expanded','true');
-        document.body.style.overflow = 'hidden';
+        toggle.textContent = '✕ Kapat';
       }
       function closeMenu(){
         nav.classList.remove('open');
         backdrop.classList.remove('show');
+        document.body.classList.remove('menu-open');
         toggle.setAttribute('aria-expanded','false');
-        document.body.style.overflow = '';
+        toggle.textContent = '☰ Menü';
       }
 
       toggle.addEventListener('click', () => {
@@ -390,8 +404,8 @@
       });
       backdrop.addEventListener('click', closeMenu);
       window.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
-      // menüden bir linke tıklanınca kapat
       document.querySelectorAll('#siteNav a').forEach(a => a.addEventListener('click', closeMenu));
+      window.addEventListener('resize', () => { if (window.innerWidth > 860) closeMenu(); });
     })();
 
     // Lightbox
