@@ -157,6 +157,39 @@
   @media (max-width: 920px){ .lb-prev{ left:8px } .lb-next{ right:8px } }
   .lb-caption{ position:absolute; left:0; right:0; bottom:-42px; text-align:center; color:#cfd3dc; font-size:14px; }
 
+  /* === MOBILE: kartları ortala ve sabit genişlikte tut === */
+  @media (max-width: 860px){
+    /* Hero panel de kart gibi ortalansın */
+    .hero .panel{
+      width: min(94vw, 360px);
+      margin-inline: auto;
+    }
+    /* Tüm .card bloklarını aynı genişlikte ve ortalı yap */
+    .card{
+      width: min(94vw, 360px);
+      margin-inline: auto;
+    }
+    /* Grid yine tek sütun; ama öğeler ortalı dursun */
+    .grid{
+      grid-template-columns: 1fr;
+      justify-items: center;
+    }
+    /* Galeri: ortala, simetrik diz, küçük ekranlarda 3 sütun */
+    .gallery{
+      justify-items: center;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .gallery img{
+      width: min(28vw, 180px);
+    }
+    /* Alt sağdaki butonlar erişilebilir kalsın */
+    .floating{
+      right: 14px;
+      bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+  }
+
   /* === Desktop düzeni === */
   @media (min-width: 861px){
     .container{ width:min(1100px, 92%); }
@@ -348,7 +381,6 @@
     const toggleAudio = document.getElementById('toggleAudio');
     const pausePlay = document.getElementById('pausePlay');
 
-    // mp3'ler — isimleri sende ne ise ona göre düzenle
     const tracks = ['assets/turku.mp3','assets/turku2.mp3','assets/turku3.mp3'];
     const order = tracks.map(t=>({t, r:Math.random()})).sort((a,b)=>a.r-b.r).map(x=>x.t);
     let idx = 0;
