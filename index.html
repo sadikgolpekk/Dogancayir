@@ -72,8 +72,24 @@
 
     footer{ border-top:1px solid var(--border); background:rgba(0,0,0,.35); padding:28px 0; text-align:center; color:var(--muted) }
 
-    .floating{ position:fixed; right:16px; bottom:16px; display:flex; gap:10px; z-index:20 }
-    .floating button{ border-radius:999px; border:1px solid var(--border); background:var(--card); color:var(--text); padding:10px 12px; cursor:pointer }
+    /* Floating controls: bigger & always on top */
+    .floating{
+      position:fixed;
+      right:14px;
+      bottom:calc(14px + env(safe-area-inset-bottom));
+      display:flex; gap:12px;
+      z-index:1000;
+    }
+    .floating button{
+      width:52px; height:52px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:var(--card);
+      color:var(--text);
+      font-size:20px;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer;
+    }
     .floating button:hover{ background:rgba(255,255,255,.12) }
     .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0 }
     blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); background:rgba(255,255,255,.06); border-radius:8px }
@@ -94,45 +110,53 @@
     @media (max-width: 920px){ .lb-prev{ left:8px } .lb-next{ right:8px } }
     .lb-caption{ position:absolute; left:0; right:0; bottom:-42px; text-align:center; color:#cfd3dc; font-size:14px; }
 
-    /* ===== Mobil menü: tam ekran + arka plan ===== */
+    /* ===== Mobil menü: tam ekran + büyük tipografi ===== */
     .backdrop{
       position:fixed; inset:0; background:rgba(0,0,0,.45); backdrop-filter: blur(2px);
       opacity:0; pointer-events:none; transition:.2s; z-index:19;
     }
     .backdrop.show{ opacity:1; pointer-events:auto; }
-    html.menu-open, body.menu-open{ overflow:hidden; height:100%; touch-action:none; }
+    body.menu-open{ overflow:hidden; touch-action:none; }
 
     @media (max-width: 860px){
+      html, body{ font-size:16px; }
+      .container{ width:94%; }
+
       .menu-toggle{ display:inline-flex; align-items:center; gap:8px }
 
-      /* tam ekran menü */
       .nav nav{
         position:fixed; inset:0; width:100vw; height:100dvh;
         background:rgba(16,18,24,.96); border-left:1px solid var(--border);
         transform:translateX(100%); transition:transform .25s ease;
-        display:flex; flex-direction:column; gap:12px;
-        padding: calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));
+        display:flex; flex-direction:column; gap:14px;
+        padding: calc(18px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom));
         overflow:auto; z-index:21;
       }
       .nav nav.open{ transform:translateX(0); }
       .nav nav a{
-        margin:0; font-size:16px; padding:12px 14px;
-        border:1px solid var(--border); border-radius:12px; background:var(--card)
+        font-size:18px; padding:14px 16px;
+        border:1px solid var(--border); border-radius:12px; background:var(--card); margin:0;
+      }
+      .nav{ justify-content:space-between }
+
+      .hero{ padding:18vh 0 12vh; }
+      .hero h1{ font-size:clamp(32px, 8.5vw, 56px); }
+      .hero p{ font-size:15.5px; max-width:720px; padding:0 6px; }
+
+      .badge{ font-size:12.5px; padding:6px 10px }
+      .grid{ gap:18px }
+      .card{ padding:18px }
+
+      .video-overlay{
+        background:linear-gradient(180deg, rgba(0,0,0,.75), rgba(0,0,0,.55) 40%, rgba(0,0,0,.78));
       }
 
-      .nav{ justify-content:space-between }
-      .hero{ padding: 14vh 0 8vh; }
-      .hero h1{ font-size: clamp(26px, 8vw, 36px); }
-      .hero p{ font-size:14px; padding:0 6px }
-      .video-overlay{
-        background:linear-gradient(180deg, rgba(0,0,0,.75), rgba(0,0,0,.55) 40%, rgba(0,0,0,.75));
-      }
-      .floating{ right:12px; bottom: calc(12px + env(safe-area-inset-bottom)); }
+      .floating{ right:14px; bottom:calc(14px + env(safe-area-inset-bottom)); }
     }
 
     @media (max-width:420px){
-      .badge{ font-size:11px; padding:5px 8px }
-      .grid{ gap:12px }
+      .badge{ font-size:11.5px; padding:5px 9px }
+      .grid{ gap:14px }
     }
   </style>
 </head>
@@ -146,17 +170,15 @@
       <source src="assets/dogancayir_desktop.mp4" type="video/mp4">
       Tarayıcınız video etiketini desteklemiyor.
     </video>
-    <!-- Ses kaynaklarını JS yönetecek -->
-    <audio id="bgAudio" preload="metadata"></audio>
+    <!-- playlist JS ile yönetilecek; loop'u kaldırdık -->
+    <audio id="bgAudio" preload="none"></audio>
   </div>
   <div class="video-overlay" aria-hidden="true"></div>
 
   <header>
     <div class="container nav">
       <div class="logo">Doğançayır<b>.TR</b></div>
-      <!-- hamburger -->
       <button id="menuToggle" class="menu-toggle" aria-expanded="false" aria-controls="siteNav">☰ Menü</button>
-      <!-- normal gezinme (mobilde tam ekran açılır) -->
       <nav id="siteNav" role="navigation">
         <a href="#hakkinda">Hakkında</a>
         <a href="#kultur">Kültür</a>
@@ -168,7 +190,6 @@
       </nav>
     </div>
   </header>
-  <!-- mobil menü için arka plan -->
   <div id="menuBackdrop" class="backdrop" aria-hidden="true"></div>
 
   <main>
@@ -347,63 +368,48 @@
     // footer yılı
     document.getElementById('y').textContent = new Date().getFullYear();
 
-    // Video + Ses kontrolü ve rastgele playlist
+    // Video + ses kontrolü ve random playlist
     (function(){
       const video = document.getElementById('bgVideo');
       const audio = document.getElementById('bgAudio');
       const toggleAudio = document.getElementById('toggleAudio');
       const pausePlay = document.getElementById('pausePlay');
 
-      // Varsa isimleri güncelle
-      const tracks = [
-        'assets/turku.mp3',
-        'assets/turku2.mp3',
-        'assets/turku3.mp3'
-      ];
-
-      // Karıştır
-      function shuffle(arr){
-        for(let i=arr.length-1;i>0;i--){
-          const j = Math.floor(Math.random()*(i+1));
-          [arr[i],arr[j]] = [arr[j],arr[i]];
-        }
-        return arr;
+      // --- MP3 playlist (dosya adlarını sizdeki isimlere göre ayarlayın) ---
+      const tracks = ['assets/turku.mp3','assets/turku2.mp3','assets/turku3.mp3'];
+      // rastgele sıraya diz
+      const order = tracks
+        .map((t,i)=>({t, r:Math.random()}))
+        .sort((a,b)=>a.r-b.r)
+        .map(x=>x.t);
+      let i = 0;
+      function loadTrack(k){
+        audio.src = order[k];
+        if (!audio.muted) audio.play().catch(()=>{});
       }
-      shuffle(tracks);
-
-      let idx = 0;
-      let audioMuted = true;
-      let paused = false;
+      audio.addEventListener('ended', ()=>{
+        i = (i + 1) % order.length;
+        loadTrack(i);
+      });
+      // ---------------------------------------------------------------------
 
       audio.muted = true;
-      audio.loop = false;
-      audio.preload = 'metadata';
-
-      function setTrack(i){
-        idx = (i + tracks.length) % tracks.length;
-        audio.src = tracks[idx];
-        audio.load();
-      }
+      let audioMuted = true, paused = false;
 
       function tryPlay(){
         video.play().catch(()=>{});
-        audio.play().catch(()=>{}); // iOS için sessiz de olsa play denemesi
+        // audio iOS kısıtı yüzünden sessiz başlar; kaynak yükle:
+        loadTrack(0);
+        audio.play().catch(()=>{});
       }
-
-      setTrack(0);
       tryPlay();
       document.addEventListener('click', tryPlay, { once:true });
       document.addEventListener('touchstart', tryPlay, { once:true });
 
-      audio.addEventListener('ended', () => {
-        setTrack(idx+1);
-        if (!audioMuted) audio.play().catch(()=>{});
-      });
-
       toggleAudio.addEventListener('click', () => {
         audioMuted = !audioMuted;
         audio.muted = audioMuted;
-        if (!audioMuted) audio.play().catch(()=>{});
+        if (!audioMuted) { audio.play().catch(()=>{}); }
         toggleAudio.textContent = audioMuted ? '🔇' : '🔊';
       });
 
@@ -414,7 +420,7 @@
       });
     })();
 
-    // Mobil hamburger menü kontrolü (tam ekran + scroll kilidi)
+    // Mobil hamburger menü (tam ekran + scroll kilidi)
     (function(){
       const toggle = document.getElementById('menuToggle');
       const nav = document.getElementById('siteNav');
@@ -424,7 +430,6 @@
         nav.classList.add('open');
         backdrop.classList.add('show');
         document.body.classList.add('menu-open');
-        document.documentElement.classList.add('menu-open'); // <html> de kilitlensin
         toggle.setAttribute('aria-expanded','true');
         toggle.textContent = '✕ Kapat';
       }
@@ -432,7 +437,6 @@
         nav.classList.remove('open');
         backdrop.classList.remove('show');
         document.body.classList.remove('menu-open');
-        document.documentElement.classList.remove('menu-open');
         toggle.setAttribute('aria-expanded','false');
         toggle.textContent = '☰ Menü';
       }
