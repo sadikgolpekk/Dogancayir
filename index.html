@@ -100,20 +100,47 @@
   }
   .btn:hover{ background:rgba(255,255,255,.14) }
 
-  /* === HAMBURGER KAPALI: nav her boyutta satır içi === */
-  .menu-toggle, .backdrop{ display:none !important; }
-  nav#siteNav{
-    position: static !important;
-    transform: none !important;
-    height: auto !important;
-    background: transparent !important;
-    padding: 0 !important;
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap;
-    gap: 10px;
-    overflow: visible !important;
-  }
+
+
+
+      /* Hamburger başlangıçta gizli */
+    .menu-toggle {
+      display: none;
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    /* Mobil görünüm */
+    @media (max-width: 860px) {
+      .menu-toggle {
+        display: block;
+      }
+      nav#siteNav {
+        position: fixed;
+        top: 56px; right: -100%;
+        width: 220px; height: 100%;
+        background: rgba(0,0,0,.95);
+        flex-direction: column;
+        gap: 14px;
+        padding: 20px;
+        transition: right 0.3s ease;
+      }
+      nav#siteNav.open {
+        right: 0;
+      }
+      nav#siteNav a {
+        margin: 0;
+        font-size: 16px;
+      }
+    }
+
+
+
+
+
 
   /* === Hero === */
   .hero{ padding:20vh 0 12vh; text-align:center; }
@@ -221,6 +248,11 @@
   <header>
     <div class="container nav">
       <div class="logo">Doğançayır<b>.TR</b></div>
+       
+      <!-- Hamburger buton -->
+      <button class="menu-toggle" aria-label="Menüyü Aç/Kapat">☰</button>
+
+
       <nav id="siteNav" role="navigation">
         <a href="#hakkinda">Hakkında</a>
         <a href="#kultur">Kültür</a>
@@ -533,6 +565,32 @@
     lbImg.addEventListener('touchstart', e=>{ touchX = e.changedTouches[0].clientX; }, {passive:true});
     lbImg.addEventListener('touchend', e=>{ const dx = e.changedTouches[0].clientX - touchX; if(Math.abs(dx)>40){ dx<0 ? next() : prev(); } }, {passive:true});
   })();
+
+
+// Hamburger menü
+(function(){
+  const toggle = document.querySelector('.menu-toggle');
+  const nav = document.getElementById('siteNav');
+
+  toggle.addEventListener('click', () => {
+    nav.classList.toggle('open');
+  });
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
 </body>
 </html>
