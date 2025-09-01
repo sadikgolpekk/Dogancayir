@@ -283,6 +283,38 @@ blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); ba
 .menu-backdrop.show { display: block; }
 
 
+
+
+
+
+
+
+
+/* floating butonları her şeyin üstüne al */
+.floating{ z-index:1202; }
+
+/* menü AÇIKKEN butonlar tıklanmasın (üstte dursa bile) */
+body.menu-open .floating{
+  pointer-events:none;
+  opacity:.85; /* istersen kaldır */
+}
+
+/* menü kapalıyken nav tıklama almasın, açılsınca alsın */
+@media (max-width:860px){
+  nav#siteNav{ pointer-events:none; }
+  nav#siteNav.open{ pointer-events:auto; z-index:1001; }
+  .menu-backdrop{ z-index:998; pointer-events:auto; }
+}
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body>
@@ -629,17 +661,26 @@ blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); ba
   const nav = document.getElementById('siteNav');
   const backdrop = document.querySelector('.menu-backdrop');
 
+  function setBodyState(){
+    if (nav.classList.contains('open')) {
+      document.body.classList.add('menu-open');   // ⬅️ menü açık
+    } else {
+      document.body.classList.remove('menu-open'); // ⬅️ menü kapalı
+    }
+  }
+
   toggle.addEventListener('click', () => {
     nav.classList.toggle('open');
     backdrop.classList.toggle('show');
+    setBodyState();
   });
 
   backdrop.addEventListener('click', () => {
     nav.classList.remove('open');
     backdrop.classList.remove('show');
+    setBodyState();
   });
 })();
-
 
 
 
