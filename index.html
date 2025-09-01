@@ -646,25 +646,50 @@ body.menu-open .floating {
   })();
 
 
+
 // Hamburger menü
-(function(){
-  const toggle = document.querySelector('.menu-toggle');
-  const nav = document.getElementById('siteNav');
+(function () {
+  const toggle   = document.querySelector('.menu-toggle');
+  const nav      = document.getElementById('siteNav');
   const backdrop = document.querySelector('.menu-backdrop');
-  const body = document.body; // ⬅️ eklendi
+  const body     = document.body;
 
-  toggle.addEventListener('click', () => {
-    nav.classList.toggle('open');
-    backdrop.classList.toggle('show');
-    body.classList.toggle('menu-open'); // ⬅️ eklendi
-  });
-
-  backdrop.addEventListener('click', () => {
+  function openMenu() {
+    nav.classList.add('open');
+    backdrop.classList.add('show');
+    body.classList.add('menu-open');
+  }
+  function closeMenu() {
     nav.classList.remove('open');
     backdrop.classList.remove('show');
-    body.classList.remove('menu-open'); // ⬅️ eklendi
+    body.classList.remove('menu-open');
+  }
+
+  // Aç/kapat
+  toggle.addEventListener('click', () => {
+    nav.classList.contains('open') ? closeMenu() : openMenu();
   });
+
+  // Backdrop’a tıklayınca kapat
+  backdrop.addEventListener('click', closeMenu);
+
+  // 🔒 Linke tıklanınca otomatik kapat
+  nav.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      // aynı sayfa içi anchor'a gidiyor; kapatmamız yeterli
+      closeMenu();
+    });
+  });
+
+  // Esc ile kapat (opsiyonel ama faydalı)
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && nav.classList.contains('open')) closeMenu();
+  });
+
+  // Hash değiştiyse (ör. tarayıcı anchor’a scrollda) yine kapat (ihtiyaten)
+  window.addEventListener('hashchange', closeMenu);
 })();
+
 
 
 
