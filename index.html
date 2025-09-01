@@ -615,9 +615,16 @@ blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); ba
 (function(){
   const toggle = document.querySelector('.menu-toggle');
   const nav = document.getElementById('siteNav');
+  const backdrop = document.querySelector('.menu-backdrop');
 
   toggle.addEventListener('click', () => {
     nav.classList.toggle('open');
+    backdrop.classList.toggle('show');
+  });
+
+  backdrop.addEventListener('click', () => {
+    nav.classList.remove('open');
+    backdrop.classList.remove('show');
   });
 })();
 
