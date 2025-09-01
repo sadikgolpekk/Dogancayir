@@ -283,6 +283,29 @@ blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); ba
 .menu-backdrop.show { display: block; }
 
 
+
+
+
+
+/* --- MENÜ KATMAN DÜZELTMESİ --- */
+/* Header ve içindeki nav, backdrop'tan yüksek olsun ki linkler tıklansın */
+header{ z-index: 1201; }      /* menü/ikonlar */
+.menu-backdrop{ z-index: 1200; }  /* arka plan karartması, header'ın altında */
+
+/* Mobilde nav açıkken tıklanabilsin */
+@media (max-width:860px){
+  nav#siteNav{ pointer-events:none; }
+  nav#siteNav.open{ pointer-events:auto; }
+}
+
+/* en sona ekle */
+body.menu-open .floating {
+  pointer-events: none;
+  opacity: .85; /* istersen kaldırabilirsin */
+}
+
+
+
 </style>
 </head>
 <body>
@@ -628,15 +651,18 @@ blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); ba
   const toggle = document.querySelector('.menu-toggle');
   const nav = document.getElementById('siteNav');
   const backdrop = document.querySelector('.menu-backdrop');
+  const body = document.body; // ⬅️ eklendi
 
   toggle.addEventListener('click', () => {
     nav.classList.toggle('open');
     backdrop.classList.toggle('show');
+    body.classList.toggle('menu-open'); // ⬅️ eklendi
   });
 
   backdrop.addEventListener('click', () => {
     nav.classList.remove('open');
     backdrop.classList.remove('show');
+    body.classList.remove('menu-open'); // ⬅️ eklendi
   });
 })();
 
