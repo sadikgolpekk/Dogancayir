@@ -44,7 +44,7 @@
 
 
 <style>
-  :root{
+:root{
   --bg-dark: rgba(0,0,0,.55);
   --bg-darker: rgba(0,0,0,.7);
   --accent: #ffd34d;
@@ -108,33 +108,6 @@ header{
   border: none;
   color: var(--text);
   cursor: pointer;
-}
-
-/* Mobil görünüm */
-@media (max-width: 860px) {
-  .menu-toggle {
-    display: block;
-  }
-
-  nav#siteNav {
-    display: none;
-    position: fixed;
-    top: 56px; right: 0;
-    width: 220px; height: 100%;
-    background: rgba(0,0,0,.95);
-    flex-direction: column;
-    gap: 14px;
-    padding: 20px;
-  }
-
-  nav#siteNav.open {
-    display: flex;
-  }
-
-  nav#siteNav a {
-    margin: 0;
-    font-size: 16px;
-  }
 }
 
 /* === Hero === */
@@ -208,6 +181,35 @@ blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); ba
 
 /* === MOBILE === */
 @media (max-width: 860px){
+  .menu-toggle { display:block; }
+
+  nav#siteNav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 70%;
+    height: 100%;
+    background: rgba(15, 15, 15, 0.98);
+    box-shadow: -4px 0 12px rgba(0,0,0,.6);
+    flex-direction: column;
+    gap: 18px;
+    padding: 80px 20px 20px;
+    transition: right 0.3s ease;
+    z-index: 999;
+    display: flex;
+  }
+  nav#siteNav.open { right: 0; }
+
+  nav#siteNav a {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+    margin: 0;
+  }
+  nav#siteNav a:last-child { border-bottom: none; }
+
   .hero .panel{ width: min(94vw, 360px); margin-inline: auto; }
   .card{ width: min(94vw, 360px); margin-inline: auto; }
   .grid{ grid-template-columns: 1fr; justify-items: center; }
@@ -227,38 +229,6 @@ blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); ba
   .gallery{ grid-template-columns:repeat(3,minmax(0,1fr)); }
 }
 
-
-
-@media (max-width: 860px) {
-  nav#siteNav {
-    position: fixed;
-    top: 0; right: -100%;
-    width: 70%; /* ekranın %70’i */
-    height: 100%;
-    background: rgba(15, 15, 15, 0.98);
-    box-shadow: -4px 0 12px rgba(0,0,0,.6);
-    flex-direction: column;
-    gap: 18px;
-    padding: 80px 20px 20px;
-    transition: right 0.3s ease;
-    z-index: 999;
-  }
-  nav#siteNav.open {
-    right: 0;
-  }
-  nav#siteNav a {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #fff;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255,255,255,.1);
-  }
-  nav#siteNav a:last-child {
-    border-bottom: none;
-  }
-}
-
 /* Menü açıldığında arkadaki karartma */
 .menu-backdrop {
   position: fixed;
@@ -267,9 +237,7 @@ blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); ba
   display: none;
   z-index: 998;
 }
-.menu-backdrop.show {
-  display: block;
-}
+.menu-backdrop.show { display:block; }
 
 
 </style>
