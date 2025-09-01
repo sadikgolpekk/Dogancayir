@@ -227,6 +227,51 @@ blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); ba
   .gallery{ grid-template-columns:repeat(3,minmax(0,1fr)); }
 }
 
+
+
+@media (max-width: 860px) {
+  nav#siteNav {
+    position: fixed;
+    top: 0; right: -100%;
+    width: 70%; /* ekranın %70’i */
+    height: 100%;
+    background: rgba(15, 15, 15, 0.98);
+    box-shadow: -4px 0 12px rgba(0,0,0,.6);
+    flex-direction: column;
+    gap: 18px;
+    padding: 80px 20px 20px;
+    transition: right 0.3s ease;
+    z-index: 999;
+  }
+  nav#siteNav.open {
+    right: 0;
+  }
+  nav#siteNav a {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+  }
+  nav#siteNav a:last-child {
+    border-bottom: none;
+  }
+}
+
+/* Menü açıldığında arkadaki karartma */
+.menu-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  z-index: 998;
+}
+.menu-backdrop.show {
+  display: block;
+}
+
+
 </style>
 </head>
 <body>
@@ -244,6 +289,9 @@ blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); ba
   <header>
     <div class="container nav">
       <div class="logo">Doğançayır<b>.TR</b></div>
+      <!-- Menü karartma arka plan -->
+      <div class="menu-backdrop"></div>
+
        
       <!-- Hamburger buton -->
       <button class="menu-toggle" aria-label="Menüyü Aç/Kapat">☰</button>
