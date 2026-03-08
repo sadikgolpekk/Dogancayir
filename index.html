@@ -1,7 +1,5 @@
-
 <!DOCTYPE html>
 <html lang="tr">
-
 
 <head>
 <meta charset="utf-8" />
@@ -44,39 +42,69 @@
 <meta name="twitter:image" content="https://dogancayir.tr/assets/og-image.jpg">
 <meta name="google-site-verification" content="TDwqQR5oBHGIoJOX_i4RPmFqo05XvBPYBM7Qnl2vzyw" />
 
-
-
-
-
-
-
-
 <!-- Leaflet (HARİTA) -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <!-- Faviconlar -->
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-
+<!-- Google Fonts - Distinctive serif + sans combo -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
   :root{
   --bg-dark: rgba(0,0,0,.55);
   --bg-darker: rgba(0,0,0,.7);
   --accent: #ffd34d;
+  --accent2: #ff8c42;
   --text: #f6f7fb;
   --muted: #cfd3dc;
   --card: rgba(255,255,255,.10);
   --card-strong: rgba(0,0,0,.45);
   --border: rgba(255,255,255,.14);
+  --scroll-progress: 0%;
+}
+
+/* DARK MODE */
+body.light-mode{
+  --bg-dark: rgba(255,255,255,.80);
+  --card: rgba(255,255,255,.70);
+  --card-strong: rgba(255,255,255,.85);
+  --border: rgba(0,0,0,.14);
+  --text: #1a1a2e;
+  --muted: #444;
+  background:#e8eaf0;
+}
+body.light-mode .video-overlay{
+  background:linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,.55) 40%, rgba(255,255,255,.85));
+}
+body.light-mode header{
+  background: rgba(255,255,255,.70);
+  border-bottom-color: rgba(0,0,0,.12);
+}
+body.light-mode footer{
+  background: rgba(255,255,255,.60);
 }
 
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
+  margin:0;
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   color:var(--text); background:#0b0d12; line-height:1.6; overflow-x:hidden;
   -webkit-tap-highlight-color: transparent;
+  transition: background 0.4s, color 0.4s;
+}
+
+/* === SCROLL PROGRESS BAR === */
+.scroll-bar{
+  position:fixed; top:0; left:0; height:3px; z-index:9999;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  width: var(--scroll-progress);
+  transition: width 0.1s linear;
+  pointer-events: none;
 }
 
 /* === Arkaplan video === */
@@ -89,6 +117,7 @@ body{
 .video-overlay{ position:fixed; inset:0;
   background:linear-gradient(180deg, rgba(0,0,0,.80), rgba(0,0,0,.55) 40%, rgba(0,0,0,.85));
   z-index:-1;
+  transition: background 0.4s;
 }
 
 /* === Layout === */
@@ -99,13 +128,14 @@ header{
   background: rgba(0,0,0,.35);
   border-bottom:1px solid var(--border);
   z-index:30;
+  transition: background 0.4s;
 }
 .nav{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; }
-.logo{ font-weight:900; letter-spacing:.3px; font-size:22px }
+.logo{ font-family: 'Playfair Display', serif; font-weight:900; letter-spacing:.3px; font-size:22px }
 .logo b{ color:var(--accent) }
 
-.nav a{ color:var(--text); text-decoration:none; opacity:.9; font-weight:600; font-size:15px; margin-left:18px; }
-.nav a:hover{ opacity:1 }
+.nav a{ color:var(--text); text-decoration:none; opacity:.9; font-weight:600; font-size:15px; margin-left:18px; transition: color 0.3s; }
+.nav a:hover{ opacity:1; color:var(--accent); }
 
 .btn{
   display:inline-flex; align-items:center; gap:8px;
@@ -113,8 +143,15 @@ header{
   border:1px solid var(--border);
   background:var(--card);
   color:var(--text); border-radius:999px; font-weight:700; text-decoration:none;
+  transition: background 0.2s, transform 0.15s;
 }
-.btn:hover{ background:rgba(255,255,255,.14) }
+.btn:hover{ background:rgba(255,255,255,.14); transform: translateY(-1px); }
+.btn-accent{
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #1a1a1a;
+  border-color: transparent;
+}
+.btn-accent:hover{ opacity:.9; transform: translateY(-2px); }
 
 /* === Hamburger butonu === */
 .menu-toggle {
@@ -153,6 +190,17 @@ header{
   }
 }
 
+/* === Scroll animasyonu === */
+.reveal{
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal.visible{
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* === Hero === */
 .hero{ padding:20vh 0 12vh; text-align:center; }
 .hero .panel{
@@ -163,47 +211,144 @@ header{
   margin:0 auto; padding:20px 14px; width:min(760px, 96%);
   box-shadow: 0 8px 30px rgba(0,0,0,.35);
 }
-.hero h1{ font-size: clamp(34px, 7.5vw, 56px); line-height:1.15; margin:6px 0 12px; font-weight:900; }
+.hero h1{
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(34px, 7.5vw, 56px); line-height:1.15; margin:6px 0 12px; font-weight:900;
+}
 .hero p{ color:var(--muted); margin:0 auto 18px; max-width:720px; font-size:16px }
 .badges{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:8px; }
 .badge{ padding:7px 11px; border:1px solid var(--border); border-radius:999px; background:var(--card); font-size:12.5px; opacity:.95 }
 
 /* === Sections === */
 section{ padding:28px 0 }
-h2{ font-size: clamp(24px, 5.5vw, 34px); margin:0 0 14px }
+h2{
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(24px, 5.5vw, 34px); margin:0 0 14px;
+}
 .grid{ display:grid; grid-template-columns:repeat(1,minmax(0,1fr)); gap:18px }
 .card{
   background:var(--card-strong); border:1px solid var(--border); border-radius:16px; padding:18px;
   box-shadow: 0 8px 30px rgba(0,0,0,.35);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
+.card:hover{ transform: translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,.45); }
 .muted{ color:var(--muted) }
 .accent{ color:var(--accent) }
 
+/* === Hava durumu widget === */
+.weather-widget{
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+}
+.weather-main{
+  display:flex; align-items:center; gap:10px;
+}
+.weather-temp{
+  font-family: 'Playfair Display', serif;
+  font-size: 48px; font-weight:900; color:var(--accent); line-height:1;
+}
+.weather-icon{ font-size:40px; }
+.weather-details{ display:flex; flex-direction:column; gap:4px; }
+.weather-details span{ font-size:13px; color:var(--muted); }
+.weather-desc{ font-size:15px; font-weight:600; color:var(--text); }
+.weather-loading{ color:var(--muted); font-style:italic; }
+
+/* === Sayaç (Countdown) === */
+.countdown-grid{
+  display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:10px;
+}
+.countdown-unit{
+  background:var(--card); border:1px solid var(--border); border-radius:14px;
+  padding:14px 20px; text-align:center; min-width:80px;
+}
+.countdown-number{
+  font-family: 'Playfair Display', serif;
+  font-size:36px; font-weight:900; color:var(--accent); line-height:1; display:block;
+}
+.countdown-label{
+  font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.8px; margin-top:4px; display:block;
+}
+
+/* === Animasyonlu istatistik sayaçları === */
+.stats-grid{
+  display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-top:14px;
+}
+.stat-card{
+  background:var(--card); border:1px solid var(--border); border-radius:14px;
+  padding:16px; text-align:center;
+}
+.stat-number{
+  font-family: 'Playfair Display', serif;
+  font-size:clamp(28px,5vw,42px); font-weight:900; color:var(--accent); line-height:1; display:block;
+}
+.stat-desc{ font-size:13px; color:var(--muted); margin-top:4px; }
+
 /* Galeri */
 .gallery{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px }
-.gallery img{ width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:12px; border:1px solid var(--border); cursor:zoom-in }
+.gallery img{
+  width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:12px; border:1px solid var(--border); cursor:zoom-in;
+  transition: transform 0.25s, filter 0.25s;
+}
+.gallery img:hover{ transform:scale(1.03); filter:brightness(1.1); }
 
 /* HARİTA */
 #map{ height: clamp(380px, 60vh, 640px); border:1px solid var(--border); border-radius:16px; }
 
+/* === Etkinlik Takvimi === */
+.event-list{ display:flex; flex-direction:column; gap:10px; margin-top:12px; }
+.event-item{
+  display:flex; align-items:flex-start; gap:14px;
+  background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px;
+}
+.event-date{
+  min-width:56px; background:var(--accent); color:#1a1a1a;
+  border-radius:10px; padding:8px; text-align:center; font-weight:700; font-size:13px; line-height:1.3;
+  flex-shrink:0;
+}
+.event-date .day{ font-family:'Playfair Display',serif; font-size:22px; font-weight:900; display:block; }
+.event-info h4{ margin:0 0 4px; font-size:15px; }
+.event-info p{ margin:0; font-size:13px; color:var(--muted); }
+
+/* === Geri bildirim / Oy formu === */
+.poll-options{ display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+.poll-btn{
+  background:var(--card); border:1px solid var(--border); border-radius:10px;
+  padding:10px 14px; color:var(--text); cursor:pointer; text-align:left;
+  font-size:14px; font-family: 'DM Sans', sans-serif; font-weight:500;
+  transition: background 0.2s;
+  position:relative; overflow:hidden;
+}
+.poll-btn:hover{ background:rgba(255,255,255,.15); }
+.poll-bar{
+  position:absolute; left:0; top:0; bottom:0;
+  background:rgba(255,211,77,.15);
+  transition: width 0.8s ease;
+  pointer-events:none;
+}
+.poll-percent{ float:right; color:var(--accent); font-weight:700; }
+
 footer{ border-top:1px solid var(--border); background:rgba(0,0,0,.35); padding:28px 0; text-align:center; color:var(--muted) }
 
-/* === Floating controls (büyük) === */
+/* === Floating controls === */
 .floating{
   position:fixed;
   right:14px;
   bottom:calc(16px + env(safe-area-inset-bottom));
-  display:flex; gap:12px;
+  display:flex; flex-direction:column; gap:10px;
   z-index:45;
 }
 .floating button{
-  width:56px; height:56px;
+  width:50px; height:50px;
   border-radius:999px; border:1px solid var(--border);
   background:var(--card); color:var(--text);
-  font-size:22px; display:flex; align-items:center; justify-content:center; cursor:pointer;
+  font-size:20px; display:flex; align-items:center; justify-content:center; cursor:pointer;
   box-shadow: 0 8px 30px rgba(0,0,0,.35);
+  transition: background 0.2s, transform 0.15s;
+  backdrop-filter: blur(8px);
 }
-.floating button:hover{ background:rgba(255,255,255,.14) }
+.floating button:hover{ background:rgba(255,255,255,.18); transform:scale(1.08); }
+#backToTop{ opacity:0; pointer-events:none; transition:opacity 0.3s; }
+#backToTop.show{ opacity:1; pointer-events:auto; }
+
 .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0 }
 blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); background:rgba(255,255,255,.08); border-radius:8px }
 
@@ -230,6 +375,8 @@ blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); ba
   .gallery{ justify-items: center; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
   .gallery img{ width: min(28vw, 180px); }
   .floating{ right: 14px; bottom: calc(16px + env(safe-area-inset-bottom)); }
+  .stats-grid{ grid-template-columns:1fr 1fr; }
+  .lb-prev{ left:8px; } .lb-next{ right:8px; }
 }
 
 /* === Desktop === */
@@ -241,9 +388,8 @@ blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); ba
   .hero .panel{ background:var(--card-strong); width:min(820px, 92%); padding:26px 22px }
   .grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
   .gallery{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .stats-grid{ grid-template-columns:repeat(4,1fr); }
 }
-
-
 
 @media (max-width: 860px) {
   nav#siteNav {
@@ -259,15 +405,11 @@ blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); ba
     padding: 80px 20px 20px;
     transition: right 0.3s ease;
     z-index: 999;
-
-    /* ⬇️ EKLE: kapalıyken tıklama almasın */
     pointer-events: none;
   }
 
   nav#siteNav.open {
     right: 0;
-
-    /* ⬇️ EKLE: açılınca linkler tıklanabilir olsun ve en üstte kalsın */
     pointer-events: auto;
     z-index: 1001;
   }
@@ -285,46 +427,56 @@ blockquote{ margin:0; padding:14px 16px; border-left:3px solid var(--accent); ba
   }
 }
 
-
 .menu-backdrop {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
   display: none;
   z-index: 998;
-
-  /* ⬇️ EKLE: sadece backdrop tıklanabilsin */
   pointer-events: auto;
 }
 .menu-backdrop.show { display: block; }
 
+header{ z-index: 1201; }
+.menu-backdrop{ z-index: 1200; }
 
-
-
-
-
-/* --- MENÜ KATMAN DÜZELTMESİ --- */
-/* Header ve içindeki nav, backdrop'tan yüksek olsun ki linkler tıklansın */
-header{ z-index: 1201; }      /* menü/ikonlar */
-.menu-backdrop{ z-index: 1200; }  /* arka plan karartması, header'ın altında */
-
-/* Mobilde nav açıkken tıklanabilsin */
 @media (max-width:860px){
   nav#siteNav{ pointer-events:none; }
   nav#siteNav.open{ pointer-events:auto; }
 }
 
-/* en sona ekle */
 body.menu-open .floating {
   pointer-events: none;
-  opacity: .85; /* istersen kaldırabilirsin */
+  opacity: .85;
 }
 
+/* === Bildirim toast === */
+.toast{
+  position:fixed; bottom:90px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:rgba(0,0,0,.9); border:1px solid var(--border);
+  color:var(--text); padding:10px 20px; border-radius:999px;
+  font-size:14px; opacity:0; pointer-events:none; z-index:9999;
+  transition: opacity 0.3s, transform 0.3s;
+  backdrop-filter: blur(8px);
+}
+.toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 
+/* === Tema toggle ikon === */
+#themeToggle{ font-size:18px; }
 
+/* Pulse animasyonu anma sayacı için */
+@keyframes pulse-accent {
+  0%,100%{ box-shadow: 0 0 0 0 rgba(255,211,77,.4); }
+  50%{ box-shadow: 0 0 0 10px rgba(255,211,77,0); }
+}
+.countdown-unit:first-child{ animation: pulse-accent 2.5s infinite; }
 </style>
 </head>
 <body>
+
+  <!-- SCROLL PROGRESS BAR -->
+  <div class="scroll-bar" id="scrollBar"></div>
+
   <!-- ARKAPLAN VİDEO + MP3 -->
   <div class="video-bg" aria-hidden="true">
     <video id="bgVideo" autoplay muted loop playsinline preload="metadata" poster="assets/KoyMeydan.png">
@@ -336,6 +488,9 @@ body.menu-open .floating {
   </div>
   <div class="video-overlay" aria-hidden="true"></div>
 
+  <!-- TOAST BİLDİRİM -->
+  <div class="toast" id="toast"></div>
+
   <header>
     <div class="container nav">
       <div class="logo">Doğançayır<b>.TR</b></div>
@@ -343,28 +498,25 @@ body.menu-open .floating {
       <!-- Hamburger buton -->
       <button class="menu-toggle" aria-label="Menüyü Aç/Kapat">☰</button>
 
-
       <nav id="siteNav" role="navigation">
         <a href="#hakkinda">Hakkında</a>
         <a href="#kultur">Kültür</a>
-        <a href="#bilgi">Ansiklopedik Bilgiler</a>
+        <a href="#bilgi">Ansiklopedik</a>
+        <a href="#etkinlikler">Etkinlikler</a>
         <a href="#galeri">Galeri</a>
         <a href="#harita">Harita</a>
         <a href="#blog">Blog</a>
+        <a href="#otobus">Otobüs</a>
         <a href="#iletisim" class="btn">İletişim</a>
-
-        <!-- header içindeki nav#siteNav'a -->
-        <a href="#otobus"> Otobüs Saatleri</a>
-
       </nav>
     </div>
   </header>
 
-
   <!-- Menü karartma arka plan -->
-      <div class="menu-backdrop"></div>
+  <div class="menu-backdrop"></div>
 
   <main>
+    <!-- HERO -->
     <section class="hero container" id="hero">
       <div class="panel">
         <div class="badges">
@@ -373,74 +525,175 @@ body.menu-open .floating {
           <div class="badge">Köy yaşamı & imece</div>
         </div>
         <h1>Eskişehir <span class="accent">Doğançayır Köyü</span> Bilgi ve Kültür Portalı</h1>
-        <p>Bu sayfa, Doğançayır’ın doğasını, insanını ve hikâyesini tek bir yerde toplar. Arkaplanda köyümüzün görüntüleri akarken; aşağıda tarihçe, kültür ve ansiklopedik bilgileri bulabilirsiniz.</p>
-        <a class="btn" href="#hakkinda">Keşfetmeye başla</a>
+        <p>Bu sayfa, Doğançayır'ın doğasını, insanını ve hikâyesini tek bir yerde toplar. Arkaplanda köyümüzün görüntüleri akarken; aşağıda tarihçe, kültür ve ansiklopedik bilgileri bulabilirsiniz.</p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <a class="btn btn-accent" href="#hakkinda">Keşfetmeye başla</a>
+          <a class="btn" href="#harita">🗺️ Haritada Gör</a>
+        </div>
       </div>
     </section>
 
+    <!-- HAVA DURUMU + İSTATİSTİKLER -->
+    <section id="istatistik">
+      <div class="container reveal">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;" class="weather-stats-wrap">
+          
+          <!-- Hava Durumu -->
+          <div class="card">
+            <h3 style="margin:0 0 12px">🌤️ Anlık Hava — Seyitgazi</h3>
+            <div id="weatherContent">
+              <p class="weather-loading">Hava bilgisi yükleniyor…</p>
+            </div>
+          </div>
+
+          <!-- Nâzım Sayacı -->
+          <div class="card" style="text-align:center;">
+            <h3 style="margin:0 0 6px">📅 Nâzım Hikmet Anmasına</h3>
+            <p class="muted" style="font-size:13px;margin:0 0 10px">Her yıl 3 Haziran — Doğançayır</p>
+            <div class="countdown-grid" id="nazimCountdown"></div>
+          </div>
+
+        </div>
+
+        <!-- İstatistikler -->
+        <div class="stats-grid" style="margin-top:18px;">
+          <div class="stat-card">
+            <span class="stat-number" data-count="774">0</span>
+            <div class="stat-desc">Nüfus (2022)</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number" data-count="17">0</span>
+            <div class="stat-desc">Seyitgazi'ye km</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number" data-count="50">0</span>
+            <div class="stat-desc">Eskişehir'e km</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number" data-count="72">0</span>
+            <div class="stat-desc">Kurtuluş Şehidi</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HAKKINDA -->
     <section id="hakkinda">
-      <div class="container">
+      <div class="container reveal">
         <h2>Hakkında</h2>
-        <p class="muted">Doğançayır, Eskişehir’in Seyitgazi ilçesine bağlı; çağdaş yaşam anlayışı, imece geleneği ve yüksek toplumsal dayanışması ile tanınan bir yerleşimdir. Temiz yollar, kooperatif kültürü ve ortak çalışma alışkanlığı köy yaşamının kalitesini yükseltir.</p>
+        <p class="muted">Doğançayır, Eskişehir'in Seyitgazi ilçesine bağlı; çağdaş yaşam anlayışı, imece geleneği ve yüksek toplumsal dayanışması ile tanınan bir yerleşimdir. Temiz yollar, kooperatif kültürü ve ortak çalışma alışkanlığı köy yaşamının kalitesini yükseltir.</p>
         <div class="grid" style="margin-top:16px">
-          <div class="card"><h3>Geçim & Üretim</h3><p class="muted">Doğançayır’da temel geçim kaynakları <b>tarım ve hayvancılıktır</b>. Köy ekonomisi bu iki alan etrafında şekillenir.</p></div>
+          <div class="card"><h3>Geçim & Üretim</h3><p class="muted">Doğançayır'da temel geçim kaynakları <b>tarım ve hayvancılıktır</b>. Köy ekonomisi bu iki alan etrafında şekillenir.</p></div>
           <div class="card"><h3>Emek & Onur</h3><p class="muted"><b>Doğançayırlı alnının teriyle kazandığını çoluk çocuğuyla yer.</b> Her evin her üyesi çalışır; ama bir o kadar da güzel yaşar.</p></div>
           <div class="card"><h3>Toplumsal Hayat</h3><p class="muted">Kadın-erkek eşitliğine saygı, ortak eğlenceler ve güçlü dayanışma kültürü belirgindir.</p></div>
         </div>
       </div>
     </section>
 
+    <!-- KÜLTÜR -->
     <section id="kultur">
-      <div class="container">
+      <div class="container reveal">
         <h2>Kültür & Anılar</h2>
-        <p class="muted" style="margin-bottom:10px">Aşağıdaki alıntılar, farklı kişilerin <b>Ekşi Sözlük</b>’te paylaştığı gözlemlerden derlenmiştir.</p>
+        <p class="muted" style="margin-bottom:10px">Aşağıdaki alıntılar, farklı kişilerin <b>Ekşi Sözlük</b>'te paylaştığı gözlemlerden derlenmiştir.</p>
         <div class="grid" style="margin-top:12px">
           <article class="card">
             <h3>Kimlik & Toplumsal Yapı</h3>
-            <p class="muted">Hacıbektaş’la birlikte İç Anadolu’nun <b>en aydın kasabalarından</b> biri olarak anılır. Halkı Türkmen Alevi’dir; <b>sol oy oranı %90’a yakındır</b>.</p>
-            <blockquote style="margin-top:10px">“Memleketim. Aydın, açık görüşlü insanlara sahip köyüm. Alevidir.
-            Köylüm çok güzel çalışır; çoluk çocuk evin her üyesi çalışır ama çok güzel de yaşar.”</blockquote>
+            <p class="muted">Hacıbektaş'la birlikte İç Anadolu'nun <b>en aydın kasabalarından</b> biri olarak anılır. Halkı Türkmen Alevi'dir; <b>sol oy oranı %90'a yakındır</b>.</p>
+            <blockquote style="margin-top:10px">"Memleketim. Aydın, açık görüşlü insanlara sahip köyüm. Alevidir.
+            Köylüm çok güzel çalışır; çoluk çocuk evin her üyesi çalışır ama çok güzel de yaşar."</blockquote>
           </article>
           <article class="card">
-            <h3>“Çağdaş köy” deneyimi</h3>
-            <blockquote>“Her ne kadar belde de olsa adı, Eskişehir’in ve Türkiye’nin en çağdaş köylerinden birisidir.”</blockquote>
-            <blockquote style="margin-top:10px">“...böyle güzel, böyle medeni insanlar görmemişim meğer o yaşa dek. Herkes birbirinin kardeşiydi; kadın erkek eşitti... Tüm köy eğlenmişti. Unutulmaz bir anı.”</blockquote>
+            <h3>"Çağdaş köy" deneyimi</h3>
+            <blockquote>"Her ne kadar belde de olsa adı, Eskişehir'in ve Türkiye'nin en çağdaş köylerinden birisidir."</blockquote>
+            <blockquote style="margin-top:10px">"...böyle güzel, böyle medeni insanlar görmemişim meğer o yaşa dek. Herkes birbirinin kardeşiydi; kadın erkek eşitti... Tüm köy eğlenmişti. Unutulmaz bir anı."</blockquote>
           </article>
           <article class="card">
             <h3>Altyapı & Düzen Hakkında Gözlemler</h3>
-            <blockquote>“Okumuşu çoktur. En basit araçlarını bile gece karayolunda aydınlatırlar. Bölgede ilçelerde bile bulunmayan traktör servislerine sahiptirler. Her kişiyi aralarına almazlar.”</blockquote>
-            <blockquote style="margin-top:10px">“Bölgede umumi tuvaletleri girilecek düzeydeki tek yerleşimdir. Ampul, çeşme musluğu çalmaz; çalınanın yerine yenisini takarlar.”</blockquote>
-            <blockquote style="margin-top:10px">“Yoldan geçenin görebileceği bu kadar. Belki içlerinde yaşasam ekleyeceğim, çıkaracağım olurdu... Anadolu’da gördüğüm en güzel köylerdendir.”</blockquote>
+            <blockquote>"Okumuşu çoktur. En basit araçlarını bile gece karayolunda aydınlatırlar. Bölgede ilçelerde bile bulunmayan traktör servislerine sahiptirler. Her kişiyi aralarına almazlar."</blockquote>
+            <blockquote style="margin-top:10px">"Bölgede umumi tuvaletleri girilecek düzeydeki tek yerleşimdir. Ampul, çeşme musluğu çalmaz; çalınanın yerine yenisini takarlar."</blockquote>
+            <blockquote style="margin-top:10px">"Yoldan geçenin görebileceği bu kadar. Belki içlerinde yaşasam ekleyeceğim, çıkaracağım olurdu... Anadolu'da gördüğüm en güzel köylerdendir."</blockquote>
           </article>
           <article class="card">
-            <h3>Nâzım Hikmet’e Saygı</h3>
-            <p class="muted">Nâzım’ın “Anadolu’da bir köy mezarlığına gömün beni…” dizelerinden ilhamla, köylüler ustanın anısına simgesel bir <b>anıt gömüt</b> yaptırmış; her yıl anma düzenlenir.Hikmet'in anıt mezarının yanında, kurtuluş savaşı'nda şehit olan 72 doğançayırlı için de anıt mezar bulunuyor</p>
-            <blockquote>yoldaşlar, ölürsem o günden önce yani,<br/>anadolu’da bir köy mezarlığına gömün beni...<br/>tepemde bir de çınar olursa<br/>taş maş da istemez hani...</blockquote>
+            <h3>Nâzım Hikmet'e Saygı</h3>
+            <p class="muted">Nâzım'ın "Anadolu'da bir köy mezarlığına gömün beni…" dizelerinden ilhamla, köylüler ustanın anısına simgesel bir <b>anıt gömüt</b> yaptırmış; her yıl anma düzenlenir. Hikmet'in anıt mezarının yanında, kurtuluş savaşı'nda şehit olan 72 doğançayırlı için de anıt mezar bulunuyor.</p>
+            <blockquote>yoldaşlar, ölürsem o günden önce yani,<br/>anadolu'da bir köy mezarlığına gömün beni...<br/>tepemde bir de çınar olursa<br/>taş maş da istemez hani...</blockquote>
           </article>
         </div>
       </div>
     </section>
 
+    <!-- ANSİKLOPEDİK BİLGİLER -->
     <section id="bilgi">
-      <div class="container">
+      <div class="container reveal">
         <h2>Ansiklopedik Bilgiler</h2>
         <div class="card" style="margin-bottom:16px">
-          <p class="muted">Doğançayır, Türkiye'nin Eskişehir ili, Seyitgazi ilçesine bağlı bir mahalledir. Nüfusu 774’tür (2022). 2013’te belde statüsünden mahalleye dönüşmüştür. Eski adı <b>Arapören</b>.</p>
+          <p class="muted">Doğançayır, Türkiye'nin Eskişehir ili, Seyitgazi ilçesine bağlı bir mahalledir. Nüfusu 774'tür (2022). 2013'te belde statüsünden mahalleye dönüşmüştür. Eski adı <b>Arapören</b>.</p>
         </div>
         <div class="grid" style="margin-top:12px">
-          <article class="card"><h3>Konum</h3><p class="muted">Eskişehir’e ~50 km, Seyitgazi’ye 17 km. Eskişehir–Ankara yolu Hamidiye kavşağına 10 km.</p></article>
-          <article class="card"><h3>Coğrafya</h3><p class="muted">Yerleşim, Kırkkız Dağı’nın eteğinde; içinden <b>Seydisuyu</b> geçer, iki köprü ile yakalar bağlanır. Çatıören Barajı sonrası geçiş kolaylaşmıştır.</p></article>
-          <article class="card"><h3>Ekonomi</h3><p class="muted">Ağırlıkla <b>tarım ve hayvancılık</b>. (Mısır,Şeker pancarı,çim,yulaf, ayçiçeği, yonca.)</p></article>
+          <article class="card"><h3>Konum</h3><p class="muted">Eskişehir'e ~50 km, Seyitgazi'ye 17 km. Eskişehir–Ankara yolu Hamidiye kavşağına 10 km.</p></article>
+          <article class="card"><h3>Coğrafya</h3><p class="muted">Yerleşim, Kırkkız Dağı'nın eteğinde; içinden <b>Seydisuyu</b> geçer, iki köprü ile yakalar bağlanır. Çatıören Barajı sonrası geçiş kolaylaşmıştır.</p></article>
+          <article class="card"><h3>Ekonomi</h3><p class="muted">Ağırlıkla <b>tarım ve hayvancılık</b>. (Mısır, Şeker pancarı, çim, yulaf, ayçiçeği, yonca.)</p></article>
           <article class="card"><h3>Kültür</h3><p class="muted">Alevi ağırlıklı yerleşim; Sünni kökenli sakinler de vardır. 3 Haziran <b>Nâzım Hikmet Anması</b> ile bilinir.</p></article>
-          <article class="card"><h3>Tarihçe</h3><p class="muted">Yaslandığı kırkkız dağı, kütahya eskişehir savaşının son noktası ve Sakarya Savaşı sonrasında Afyon - Eskişehir hattına çekilen yunan birliklerinin kuzeydeki direnek noktası olmuştur. Büyük Taarruz'a kadar bir yıl boyunca halka yoğun şekilde eziyet edilmiş, dağın ormanları yakılmıştır.</p></article>
+          <article class="card"><h3>Tarihçe</h3><p class="muted">Yaslandığı Kırkkız Dağı, Kütahya–Eskişehir Savaşı'nın son noktası ve Sakarya Savaşı sonrasında Afyon–Eskişehir hattına çekilen Yunan birliklerinin kuzeydeki direnek noktası olmuştur. Büyük Taarruz'a kadar bir yıl boyunca halka yoğun şekilde eziyet edilmiş, dağın ormanları yakılmıştır.</p></article>
         </div>
       </div>
     </section>
 
+    <!-- ETKİNLİKLER TAKVİMİ (YENİ) -->
+    <section id="etkinlikler">
+      <div class="container reveal">
+        <h2>📅 Etkinlikler & Önemli Günler</h2>
+        <p class="muted">Köyümüzde her yıl düzenlenen başlıca etkinlikler.</p>
+        <div class="event-list">
+          <div class="event-item">
+            <div class="event-date">
+              <span class="day">3</span>
+              Haz
+            </div>
+            <div class="event-info">
+              <h4>🌹 Nâzım Hikmet Anması</h4>
+              <p>Her yıl düzenlenen geleneksel anma töreni. Şiir okumaları, kültürel etkinlikler ve anıt mezar ziyareti.</p>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-date">
+              <span class="day">23</span>
+              Nis
+            </div>
+            <div class="event-info">
+              <h4>🎉 Ulusal Egemenlik ve Çocuk Bayramı</h4>
+              <p>Köy meydanında kutlamalar, çocuk etkinlikleri ve müzik.</p>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-date">
+              <span class="day">29</span>
+              Eki
+            </div>
+            <div class="event-info">
+              <h4>🇹🇷 Cumhuriyet Bayramı</h4>
+              <p>Atatürk anması, tören ve köy genelinde kutlamalar.</p>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-date" style="background:var(--card);color:var(--muted);border:1px solid var(--border);">
+              <span class="day">?</span>
+              Trt
+            </div>
+            <div class="event-info">
+              <h4>🌾 Hasat Şenliği</h4>
+              <p>Yaz sonu hasat dönemi — tarih her yıl belirlenir. Köy dayanışması ve imece geleneği kutlanır.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALERİ -->
     <section id="galeri">
-      <div class="container">
+      <div class="container reveal">
         <h2>Galeri</h2>
-        <p class="muted">Doğançayır’dan kareler.tıklayınca büyür, sağ/sol ile gezinebilirsiniz.</p>
+        <p class="muted">Doğançayır'dan kareler. Tıklayınca büyür, sağ/sol ile gezinebilirsiniz.</p>
         <div class="gallery" style="margin-top:12px">
           <img src="assets/HaciBektas.jpg" alt="Hacı Bektaş Veli figürü">
           <img src="assets/Ataturk.png" alt="Atatürk figürü ve bayrak">
@@ -449,27 +702,28 @@ body.menu-open .floating {
           <img src="assets/Melikgazi.png" alt="Melikgazi Türbesi">
           <img src="assets/koyluler.png" alt="Köylüler ve topluluk">
           <img src="assets/Tarla.png" alt="Tarlalarımız">
-           <img src="assets/DaginArkasi.png" alt="Dağın arkası">
-
+          <img src="assets/DaginArkasi.png" alt="Dağın arkası">
         </div>
       </div>
     </section>
 
-    <!-- === SADE HARİTA + TKGM BUTON === -->
+    <!-- HARİTA -->
     <section id="harita">
-      <div class="container">
+      <div class="container reveal">
         <h2>Harita</h2>
         <div class="card">
           <div id="map"></div>
-          <div style="margin-top:12px">
+          <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
             <a class="btn" href="https://parselsorgu.tkgm.gov.tr/#ara/cografi/39.526379792296545/30.84720611572266" target="_blank" rel="noopener">🧭 TKGM Parsel Sorgu</a>
+            <a class="btn" href="https://www.google.com/maps/search/Doğançayır+Köyü,+Seyitgazi" target="_blank" rel="noopener">📍 Google Maps</a>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- BLOG & DUYURULAR -->
     <section id="blog">
-      <div class="container">
+      <div class="container reveal">
         <h2>Blog & Duyurular</h2>
         <div class="grid" style="margin-top:12px">
           <article class="card">
@@ -478,42 +732,52 @@ body.menu-open .floating {
             <a class="btn" href="https://www.facebook.com/groups/800945713366564" target="_blank" rel="noopener">Gruba Katıl</a>
           </article>
           <article class="card">
-            <h3>Belgesel: “Kırkkız”</h3>
-            <p class="muted">Köyümüzün belgeseli YouTube’da.</p>
+            <h3>Belgesel: "Kırkkız"</h3>
+            <p class="muted">Köyümüzün belgeseli YouTube'da.</p>
             <a class="btn" href="https://youtu.be/0sf1VAMBHgA?si=uvKVuuCPEQJZSIaw" target="_blank" rel="noopener">Belgeseli İzle</a>
+          </article>
+          <!-- YENİ: Anket kartı -->
+          <article class="card">
+            <h3>📊 Köy Anketi</h3>
+            <p class="muted">Doğançayır'ı nasıl öğrendiniz?</p>
+            <div class="poll-options" id="pollOptions">
+              <button class="poll-btn" data-idx="0"><div class="poll-bar" style="width:0%"></div>Aile / Akraba <span class="poll-percent">0%</span></button>
+              <button class="poll-btn" data-idx="1"><div class="poll-bar" style="width:0%"></div>İnternet / Ekşi Sözlük <span class="poll-percent">0%</span></button>
+              <button class="poll-btn" data-idx="2"><div class="poll-bar" style="width:0%"></div>Belgesel / Medya <span class="poll-percent">0%</span></button>
+              <button class="poll-btn" data-idx="3"><div class="poll-bar" style="width:0%"></div>Nâzım Hikmet Anması <span class="poll-percent">0%</span></button>
+            </div>
           </article>
         </div>
       </div>
     </section>
 
-
-
+    <!-- OTOBÜS SAATLERİ -->
     <section id="otobus">
-  <div class="container">
-    <h2>Otobüs Saatleri</h2>
-    <div class="card" style="overflow:hidden">
-      <p class="muted" style="margin-top:0">
-        Hat: <b>99</b> — Resmî kaynaktan gömülüdür.
-      </p>
-      <iframe
-        src="https://www.eskisehir.bel.tr/ulasim-hizmetleri-otobus-saatleri-dvm.php?otobus_hat_id=84&menu_id=57"
-        title="Eskişehir Belediyesi Otobüs Saatleri"
-        style="width:100%;height:70vh;border:0"
-        loading="lazy">
-      </iframe>
-      <div style="margin-top:10px">
-        <a class="btn" target="_blank" rel="noopener"
-           href="https://www.eskisehir.bel.tr/ulasim-hizmetleri-otobus-saatleri-dvm.php?otobus_hat_id=84&menu_id=57">
-          ↗ Resmî sayfayı yeni sekmede aç
-        </a>
+      <div class="container reveal">
+        <h2>Otobüs Saatleri</h2>
+        <div class="card" style="overflow:hidden">
+          <p class="muted" style="margin-top:0">
+            Hat: <b>99</b> — Resmî kaynaktan gömülüdür.
+          </p>
+          <iframe
+            src="https://www.eskisehir.bel.tr/ulasim-hizmetleri-otobus-saatleri-dvm.php?otobus_hat_id=84&menu_id=57"
+            title="Eskişehir Belediyesi Otobüs Saatleri"
+            style="width:100%;height:70vh;border:0"
+            loading="lazy">
+          </iframe>
+          <div style="margin-top:10px">
+            <a class="btn" target="_blank" rel="noopener"
+               href="https://www.eskisehir.bel.tr/ulasim-hizmetleri-otobus-saatleri-dvm.php?otobus_hat_id=84&menu_id=57">
+              ↗ Resmî sayfayı yeni sekmede aç
+            </a>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-
+    <!-- İLETİŞİM -->
     <section id="iletisim">
-      <div class="container">
+      <div class="container reveal">
         <h2>İletişim</h2>
         <div class="card">
           <p class="muted">E-posta: <a href="mailto:info@dogancayir.tr" style="color:var(--text)">info@dogancayir.tr</a></p>
@@ -522,12 +786,15 @@ body.menu-open .floating {
         </div>
       </div>
     </section>
+
   </main>
 
-  <footer><div class="container">© <span id="y"></span> Sadık Gölpek,Doğançayır. Tüm hakları saklıdır.</div></footer>
+  <footer><div class="container">© <span id="y"></span> Sadık Gölpek, Doğançayır. Tüm hakları saklıdır.</div></footer>
 
   <!-- Büyük, erişilebilir kontroller -->
   <div class="floating">
+    <button id="backToTop" title="Yukarı çık" aria-label="Sayfanın başına git">⬆️</button>
+    <button id="themeToggle" title="Gece/Gündüz modu" aria-label="Tema değiştir">🌙</button>
     <button id="toggleAudio" aria-pressed="true" title="Türkü sesini aç/kapat">🔇<span class="sr-only">Sesi aç/kapat</span></button>
     <button id="pausePlay" aria-pressed="false" title="Videoyu durdur/oynat">⏸️<span class="sr-only">Videoyu durdur/oynat</span></button>
   </div>
@@ -543,14 +810,178 @@ body.menu-open .floating {
     </div>
   </div>
 
-  <!-- Leaflet JS (HARİTA) -->
+  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
 <script>
-  // yıl
+  // === YIL ===
   document.getElementById('y').textContent = new Date().getFullYear();
 
-  // Video + random playlist
+  // === TOAST BİLDİRİM ===
+  function showToast(msg, duration=2800){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(()=> t.classList.remove('show'), duration);
+  }
+
+  // === SCROLL PROGRESS BAR ===
+  window.addEventListener('scroll', ()=>{
+    const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+    document.documentElement.style.setProperty('--scroll-progress', (scrolled*100).toFixed(1)+'%');
+    // Yukarı çık butonu
+    const btn = document.getElementById('backToTop');
+    window.scrollY > 400 ? btn.classList.add('show') : btn.classList.remove('show');
+  }, {passive:true});
+
+  document.getElementById('backToTop').addEventListener('click',()=>{
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  // === GECE/GÜNDÜZ MODU ===
+  const themeBtn = document.getElementById('themeToggle');
+  let lightMode = false;
+  themeBtn.addEventListener('click', ()=>{
+    lightMode = !lightMode;
+    document.body.classList.toggle('light-mode', lightMode);
+    themeBtn.textContent = lightMode ? '🌞' : '🌙';
+    showToast(lightMode ? '☀️ Gündüz modu açıldı' : '🌙 Gece modu açıldı');
+  });
+
+  // === SCROLL REVEAL (Intersection Observer) ===
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        revealObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => revealObs.observe(el));
+
+  // === ANİMASYONLU SAYAÇ (İstatistikler) ===
+  function animateCount(el, target, duration=1800){
+    const start = performance.now();
+    function tick(now){
+      const progress = Math.min((now-start)/duration, 1);
+      const ease = 1 - Math.pow(1-progress, 3); // ease-out-cubic
+      el.textContent = Math.round(ease * target);
+      if(progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  const statEls = document.querySelectorAll('.stat-number[data-count]');
+  const statObs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        animateCount(e.target, parseInt(e.target.dataset.count));
+        statObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  statEls.forEach(el => statObs.observe(el));
+
+  // === NAZIM HİKMET SAYACI ===
+  function updateCountdown(){
+    const now = new Date();
+    const thisYear = now.getFullYear();
+    let target = new Date(thisYear, 5, 3); // 3 Haziran (0-indexed: Haziran=5)
+    if(now >= target) target = new Date(thisYear+1, 5, 3);
+
+    const diff = target - now;
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
+
+    const el = document.getElementById('nazimCountdown');
+    el.innerHTML = [
+      {n:days,   l:'Gün'},
+      {n:hours,  l:'Saat'},
+      {n:mins,   l:'Dakika'},
+      {n:secs,   l:'Saniye'}
+    ].map(u=>`
+      <div class="countdown-unit">
+        <span class="countdown-number">${String(u.n).padStart(2,'0')}</span>
+        <span class="countdown-label">${u.l}</span>
+      </div>
+    `).join('');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // === HAVA DURUMU (Open-Meteo API — ücretsiz, API key gerektirmez) ===
+  // Koordinatlar: Seyitgazi bölgesi
+  (function(){
+    const LAT = 39.53;
+    const LON = 30.70;
+    const WMO = {
+      0:'Açık ☀️', 1:'Açık 🌤️', 2:'Parçalı bulutlu ⛅', 3:'Kapalı ☁️',
+      45:'Sisli 🌫️', 48:'Yoğun sis 🌫️',
+      51:'Hafif çiseleyen 🌦️', 53:'Çiseleyen 🌦️', 55:'Yoğun çiseleyen 🌧️',
+      61:'Hafif yağmurlu 🌧️', 63:'Yağmurlu 🌧️', 65:'Yoğun yağmurlu 🌧️',
+      71:'Hafif karlı 🌨️', 73:'Karlı 🌨️', 75:'Yoğun kar 🌨️',
+      80:'Sağanak 🌦️', 81:'Kuvvetli sağanak 🌧️', 85:'Kar sağanağı 🌨️',
+      95:'Fırtınalı ⛈️', 99:'Şiddetli fırtına ⛈️'
+    };
+
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,weathercode,windspeed_10m,relativehumidity_2m&timezone=Europe%2FIstanbul&forecast_days=1`)
+      .then(r => r.json())
+      .then(data => {
+        const c = data.current;
+        const desc = WMO[c.weathercode] || '—';
+        document.getElementById('weatherContent').innerHTML = `
+          <div class="weather-widget">
+            <div class="weather-main">
+              <span class="weather-temp">${Math.round(c.temperature_2m)}°</span>
+            </div>
+            <div class="weather-details">
+              <span class="weather-desc">${desc}</span>
+              <span>💨 Rüzgâr: ${c.windspeed_10m} km/s</span>
+              <span>💧 Nem: %${c.relativehumidity_2m}</span>
+              <span style="font-size:11px;color:var(--muted);margin-top:2px">Seyitgazi bölgesi · Open-Meteo</span>
+            </div>
+          </div>
+        `;
+      })
+      .catch(()=>{
+        document.getElementById('weatherContent').innerHTML = `<p class="weather-loading">Hava bilgisi alınamadı.</p>`;
+      });
+  })();
+
+  // === ANKET ===
+  (function(){
+    const votes = [42, 28, 18, 12]; // Başlangıç oy sayıları (örnek)
+    let voted = localStorage.getItem('dogancayir_poll') !== null;
+    const btns = document.querySelectorAll('.poll-btn');
+
+    function render(){
+      const total = votes.reduce((a,b)=>a+b,0);
+      btns.forEach((btn,i)=>{
+        const pct = total ? Math.round(votes[i]/total*100) : 0;
+        btn.querySelector('.poll-bar').style.width = pct+'%';
+        btn.querySelector('.poll-percent').textContent = pct+'%';
+        if(voted) btn.disabled = true;
+      });
+    }
+
+    btns.forEach((btn,i)=>{
+      btn.addEventListener('click',()=>{
+        if(voted) return;
+        votes[i]++;
+        voted = true;
+        try{ localStorage.setItem('dogancayir_poll','1'); } catch(e){}
+        render();
+        showToast('✅ Oyunuz kaydedildi, teşekkürler!');
+      });
+    });
+
+    render();
+  })();
+
+  // === Video + random playlist ===
   (function(){
     const video = document.getElementById('bgVideo');
     const audio = document.getElementById('bgAudio');
@@ -583,19 +1014,20 @@ body.menu-open .floating {
       audio.muted = audioMuted;
       if (!audioMuted) audio.play().catch(()=>{});
       toggleAudio.textContent = audioMuted ? '🔇' : '🔊';
+      showToast(audioMuted ? '🔇 Ses kapatıldı' : '🔊 Ses açıldı');
     });
 
     pausePlay.addEventListener('click', () => {
-      if (paused) { video.play().catch(()=>{}); pausePlay.textContent = '⏸️'; }
-      else { video.pause(); pausePlay.textContent = '▶️'; }
+      if (paused) { video.play().catch(()=>{}); pausePlay.textContent = '⏸️'; showToast('▶️ Video oynatılıyor'); }
+      else { video.pause(); pausePlay.textContent = '▶️'; showToast('⏸️ Video duraklatıldı'); }
       paused = !paused;
     });
   })();
 
-  // HARİTA – Doğançayır’a odak + marker (Nominatim geocode)
+  // === HARİTA ===
   (function(){
     const NAME = 'Doğançayır, Seyitgazi, Eskişehir, Türkiye';
-    const FALLBACK = [39.34, 30.63]; // Geocode olmazsa burası
+    const FALLBACK = [39.34, 30.63];
 
     const map = L.map('map', { zoomControl:true }).setView(FALLBACK, 12);
 
@@ -615,10 +1047,8 @@ body.menu-open .floating {
         if (!arr || !arr[0]) throw new Error('nohit');
         const lat = parseFloat(arr[0].lat);
         const lon = parseFloat(arr[0].lon);
-
         const marker = L.marker([lat, lon]).addTo(map).bindPopup(`<b>${NAME}</b>`);
         const circle = L.circle([lat, lon], { radius: 900, color: '#ffd34d', weight: 2, fillOpacity: 0.12 }).addTo(map);
-
         map.fitBounds(circle.getBounds(), { padding: [20,20] });
         marker.openPopup();
       })
@@ -630,7 +1060,7 @@ body.menu-open .floating {
       });
   })();
 
-  // Lightbox
+  // === LIGHTBOX ===
   (function(){
     const thumbs = Array.from(document.querySelectorAll('.gallery img'));
     if (!thumbs.length) return;
@@ -661,51 +1091,42 @@ body.menu-open .floating {
     lbImg.addEventListener('touchend', e=>{ const dx = e.changedTouches[0].clientX - touchX; if(Math.abs(dx)>40){ dx<0 ? next() : prev(); } }, {passive:true});
   })();
 
+  // === HAMBURGER MENÜ ===
+  (function () {
+    const toggle   = document.querySelector('.menu-toggle');
+    const nav      = document.getElementById('siteNav');
+    const backdrop = document.querySelector('.menu-backdrop');
+    const body     = document.body;
 
+    function openMenu() {
+      nav.classList.add('open');
+      backdrop.classList.add('show');
+      body.classList.add('menu-open');
+    }
+    function closeMenu() {
+      nav.classList.remove('open');
+      backdrop.classList.remove('show');
+      body.classList.remove('menu-open');
+    }
 
-// Hamburger menü
-(function () {
-  const toggle   = document.querySelector('.menu-toggle');
-  const nav      = document.getElementById('siteNav');
-  const backdrop = document.querySelector('.menu-backdrop');
-  const body     = document.body;
-
-  function openMenu() {
-    nav.classList.add('open');
-    backdrop.classList.add('show');
-    body.classList.add('menu-open');
-  }
-  function closeMenu() {
-    nav.classList.remove('open');
-    backdrop.classList.remove('show');
-    body.classList.remove('menu-open');
-  }
-
-  // Aç/kapat
-  toggle.addEventListener('click', () => {
-    nav.classList.contains('open') ? closeMenu() : openMenu();
-  });
-
-  // Backdrop’a tıklayınca kapat
-  backdrop.addEventListener('click', closeMenu);
-
-  // 🔒 Linke tıklanınca otomatik kapat
-  nav.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      // aynı sayfa içi anchor'a gidiyor; kapatmamız yeterli
-      closeMenu();
+    toggle.addEventListener('click', () => {
+      nav.classList.contains('open') ? closeMenu() : openMenu();
     });
-  });
 
-  // Esc ile kapat (opsiyonel ama faydalı)
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && nav.classList.contains('open')) closeMenu();
-  });
+    backdrop.addEventListener('click', closeMenu);
 
-  // Hash değiştiyse (ör. tarayıcı anchor’a scrollda) yine kapat (ihtiyaten)
-  window.addEventListener('hashchange', closeMenu);
-})();
+    nav.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        closeMenu();
+      });
+    });
 
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && nav.classList.contains('open')) closeMenu();
+    });
+
+    window.addEventListener('hashchange', closeMenu);
+  })();
 </script>
 </body>
 </html>
